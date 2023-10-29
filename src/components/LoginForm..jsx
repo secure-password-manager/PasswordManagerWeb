@@ -69,7 +69,7 @@ function LoginForm() {
                         <Stack  spacing={2}>
                             <TextField onChange={handleEmailChange} value={email} type="email" id="email-login" label="Email" variant="outlined" />
                             <TextField onChange={handlePasswordChange} value={password} type="password" id="password-login" label="Password" variant="outlined" helperText=""/>
-                            <Button variant="contained" type="submit" sx={{width: "25%", float: "right"}} >Sign Up</Button>
+                            <Button variant="contained" type="submit" sx={{width: "25%", float: "right"}} >Login</Button>
                         </Stack>
                     </Box>
                     </form>
@@ -84,7 +84,7 @@ function LoginForm() {
                             <TextField onChange={handlePasswordChange} value={password} type="password" id="password-signup" label="Password" variant="outlined" />
                             <TextField onChange={handlePasswordVerificationChange} value={passwordVerification} type="password" id="password-verify" label="Verify Password" variant="outlined"
                                 helperText={passwordMatchingMsg}/>
-                            <Button variant="contained" type="submit" sx={{width: "25%", float: "right"}}>Login</Button>
+                            <Button variant="contained" type="submit" sx={{width: "25%", float: "right"}}>Sign Up</Button>
                         </Stack>
 
                     </Box>
