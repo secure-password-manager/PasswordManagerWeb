@@ -6,13 +6,14 @@ const passwordMatchingText = {
   error: "Passwords do not match",
   valid: "",
 };
+
 function LoginForm() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVerification, setPasswordVerification] = useState("");
   const [passwordMatchingMsg, setPasswordMatchingMsg] = useState(
-    passwordMatchingText.valid,
+    passwordMatchingText.valid
   );
 
   const handleTabChange = (event, tabIndex) => {
@@ -58,7 +59,13 @@ function LoginForm() {
   };
 
   return (
-    <Container sx={{ width: "25%", border: "1px solid gray" }}>
+    <Container
+      sx={{
+        width: "25%",
+        border: "1px solid gray",
+        minWidth: "200px",
+      }}
+    >
       <Tabs
         value={currentTabIndex}
         sx={{ borderBottom: 1 }}
