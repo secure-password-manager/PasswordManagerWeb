@@ -3,12 +3,13 @@ import { useParams } from "react-router-dom";
 import sampleData from "../config/data/sampleData";
 
 function VaultItemPage() {
-  const { collectionsId, vaultId } = useParams();
+  const { collectionsId, vaultItemId } = useParams();
   const collection = sampleData.filter(
     (collection) => collection.uuid === collectionsId
   )[0];
+  console.log(collectionsId, vaultItemId);
   const vault = collection.vault_items.filter(
-    (item) => item.uuid === vaultId
+    (item) => item.uuid === vaultItemId
   )[0];
 
   console.log(vault);

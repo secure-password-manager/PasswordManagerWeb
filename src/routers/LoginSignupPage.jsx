@@ -1,7 +1,7 @@
 import React from "react";
 import LoginForm from "../components/LoginForm";
 
-function AccountManagerPage() {
+function LoginSignupPage() {
   return (
     <>
       <h1>Account Page</h1>
@@ -10,4 +10,4 @@ function AccountManagerPage() {
   );
 }
 
-export default AccountManagerPage;
+export default LoginSignupPage;

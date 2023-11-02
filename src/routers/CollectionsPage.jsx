@@ -17,7 +17,7 @@ function CollectionsPage() {
           {collection.vault_items.map((item) => {
             return (
               <li key={item.uuid}>
-                <Link to={`vaultItem/${item.uuid}`}>
+                <Link to={`vaultItemId/${item.uuid}`}>
                   {item.encrypted_data}
                 </Link>
               </li>
