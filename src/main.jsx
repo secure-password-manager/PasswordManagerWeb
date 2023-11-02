@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./routers/Home.jsx";
 import ErrorPage from "./routers/ErrorPage.jsx";
 import AccountManagerPage from "./routers/AccountManagerPage.jsx";
-import AccountPage from "./routers/AccountPage.jsx";
+import DashboardPage from "./routers/DashboardPage.jsx";
 import CollectionsPage from "./routers/CollectionsPage.jsx";
 import VaultItemPage from "./routers/VaultItemPage.jsx";
 
@@ -19,8 +19,8 @@ const router = createBrowserRouter([
     element: <AccountManagerPage />,
   },
   {
-    path: "account/",
-    element: <AccountPage />,
+    path: "dashboard/",
+    element: <DashboardPage />,
     children: [
       {
         path: "collections/:collectionsId",

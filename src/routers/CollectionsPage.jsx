@@ -5,7 +5,7 @@ import sampleData from "../config/data/sampleData";
 function CollectionsPage() {
   const { collectionsId } = useParams();
   const collectionArr = sampleData.filter((data) => {
-    return collectionsId === data.name;
+    return collectionsId === data.uuid;
   });
   // Assume unique collection name
   const collection = collectionArr[0];
@@ -17,7 +17,7 @@ function CollectionsPage() {
           {collection.vault_items.map((item) => {
             return (
               <li key={item.uuid}>
-                <Link to={`vaultItem/${item.encrypted_data}`}>
+                <Link to={`vaultItem/${item.uuid}`}>
                   {item.encrypted_data}
                 </Link>
               </li>

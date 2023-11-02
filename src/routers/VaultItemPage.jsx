@@ -5,10 +5,10 @@ import sampleData from "../config/data/sampleData";
 function VaultItemPage() {
   const { collectionsId, vaultId } = useParams();
   const collection = sampleData.filter(
-    (collection) => collection.name === collectionsId
+    (collection) => collection.uuid === collectionsId
   )[0];
   const vault = collection.vault_items.filter(
-    (item) => item.encrypted_data === vaultId
+    (item) => item.uuid === vaultId
   )[0];
 
   console.log(vault);

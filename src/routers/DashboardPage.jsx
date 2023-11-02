@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import sampleData from "../config/data/sampleData";
 
-function AccountPage() {
+function DashboardPage() {
   const collections = sampleData;
   return (
     <>
@@ -11,7 +11,7 @@ function AccountPage() {
         {collections.map((collection) => {
           return (
             <li key={collection.uuid}>
-              <Link to={`collections/${collection.name}`}>
+              <Link to={`collections/${collection.uuid}`}>
                 {collection.name}
               </Link>
             </li>
@@ -23,4 +23,4 @@ function AccountPage() {
   );
 }
 
-export default AccountPage;
+export default DashboardPage;
