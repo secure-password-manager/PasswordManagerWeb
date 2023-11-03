@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const errorMessages = {
   mismatch: "Passwords do not match",
   empty: "",
+  reqiuired: "Missing required fields",
   invalidEmail: "Email is invalid",
   passwordLength: "Password must be 12 character minimum.",
 };
@@ -13,6 +14,11 @@ const errorMessages = {
 const clearError = {
   status: false,
   message: errorMessages.empty,
+};
+
+const requiredFieldsError = {
+  status: true,
+  message: errorMessages.reqiuired,
 };
 
 const emailRegEx =
@@ -83,9 +89,19 @@ function LoginForm() {
   const onCreateAccount = (event) => {
     event.preventDefault();
 
-    // Null check
+    // When submitting with null fields
     if (password === "" || passwordVerification === "" || email === "") {
-      alert("Missing required fields");
+      if (password === "") {
+        setPasswordError(requiredFieldsError);
+      }
+
+      if (passwordVerification === "") {
+        setPasswordVerificationError(requiredFieldsError);
+      }
+
+      if (email === "") {
+        setEmailError(requiredFieldsError);
+      }
       return;
     }
 
