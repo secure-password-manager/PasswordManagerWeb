@@ -182,7 +182,7 @@ function LoginForm() {
                 id="password-signup"
                 label="Password"
                 variant="outlined"
-                helperText={passwordError.message}
+                helperText={errorMessages.passwordLength}
               />
               <TextField
                 error={passwordVerificationError.status}
