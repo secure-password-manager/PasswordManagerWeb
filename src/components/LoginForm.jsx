@@ -1,61 +1,132 @@
 import React, { useState } from "react";
 import { Tab, Tabs, TextField, Stack, Button, Container } from "@mui/material";
 import { Box } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
-const passwordMatchingText = {
-  error: "Passwords do not match",
-  valid: "",
+const errorMessages = {
+  mismatch: "Passwords do not match",
+  empty: "",
+  reqiuired: "Missing required fields",
+  invalidEmail: "Email is invalid",
+  passwordLength: "Password must be 12 character minimum.",
 };
+
+const clearError = {
+  status: false,
+  message: errorMessages.empty,
+};
+
+const requiredFieldsError = {
+  status: true,
+  message: errorMessages.reqiuired,
+};
+
+const emailRegEx =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 function LoginForm() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
+
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(clearError);
+
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(clearError);
+
   const [passwordVerification, setPasswordVerification] = useState("");
-  const [passwordMatchingMsg, setPasswordMatchingMsg] = useState(
-    passwordMatchingText.valid
-  );
+  const [passwordVerificationError, setPasswordVerificationError] =
+    useState(clearError);
+
+  const navigate = useNavigate();
 
   const handleTabChange = (event, tabIndex) => {
     setCurrentTabIndex(tabIndex);
     setEmail("");
     setPassword("");
     setPasswordVerification("");
-    setPasswordMatchingMsg(passwordMatchingText.valid);
+    setEmailError(clearError);
+    setPasswordError(clearError);
+    setPasswordVerificationError(clearError);
   };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
+    if (!emailRegEx.test(event.target.value)) {
+      setEmailError({ status: true, message: errorMessages.invalidEmail });
+    } else {
+      setEmailError(clearError);
+    }
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
-    setPasswordMatchingMsg(passwordMatchingText.valid);
+    if (event.target.value.length < 12) {
+      setPasswordError({
+        status: true,
+      });
+    } else {
+      setPasswordError(clearError);
+    }
   };
 
   const handlePasswordVerificationChange = (event) => {
     setPasswordVerification(event.target.value);
-    setPasswordMatchingMsg(passwordMatchingText.valid);
+    if (event.target.value !== password) {
+      setPasswordVerificationError({
+        status: true,
+        message: errorMessages.mismatch,
+      });
+    } else {
+      setPasswordVerificationError(clearError);
+    }
   };
 
-  /*
-    TODO:
-    - Handle api status code (200 vs != 200)
-    */
   const onLogin = (event) => {
     event.preventDefault();
     alert("Welcome " + email);
   };
 
-  /*
-    TODO:
-    - Handle api status code (200 vs != 200)
-    */
   const onCreateAccount = (event) => {
     event.preventDefault();
-    if (password !== passwordVerification) {
-      setPasswordMatchingMsg(passwordMatchingText.error);
+
+    // When submitting with null fields
+    if (password === "" || passwordVerification === "" || email === "") {
+      if (password === "") {
+        setPasswordError(requiredFieldsError);
+      }
+
+      if (passwordVerification === "") {
+        setPasswordVerificationError(requiredFieldsError);
+      }
+
+      if (email === "") {
+        setEmailError(requiredFieldsError);
+      }
+      return;
     }
+
+    // Same Password
+    if (passwordVerification !== password) {
+      setPasswordVerificationError({
+        status: true,
+        message: errorMessages.mismatch,
+      });
+      return;
+    }
+
+    // Status Check
+    if (
+      passwordError.status ||
+      passwordVerificationError.status ||
+      passwordError.status
+    ) {
+      console.log("Can't save");
+      return;
+    }
+
+    // Handle api call here
+    console.log("save");
+    navigate("/dashboard");
   };
 
   return (
@@ -111,29 +182,33 @@ function LoginForm() {
           <Box sx={{ p: 3 }}>
             <Stack spacing={2}>
               <TextField
+                error={emailError.status}
                 onChange={handleEmailChange}
                 value={email}
-                type="email"
                 id="email-signup"
                 label="Email"
                 variant="outlined"
+                helperText={emailError.message}
               />
               <TextField
+                error={passwordError.status}
                 onChange={handlePasswordChange}
                 value={password}
                 type="password"
                 id="password-signup"
                 label="Password"
                 variant="outlined"
+                helperText={errorMessages.passwordLength}
               />
               <TextField
+                error={passwordVerificationError.status}
                 onChange={handlePasswordVerificationChange}
                 value={passwordVerification}
                 type="password"
                 id="password-verify"
                 label="Verify Password"
                 variant="outlined"
-                helperText={passwordMatchingMsg}
+                helperText={passwordVerificationError.message}
               />
               <Button
                 variant="contained"
