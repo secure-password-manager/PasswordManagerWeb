@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Tab, Tabs, TextField, Stack, Button, Container } from "@mui/material";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import { createAccount } from "../common/ServerAPI";
 
 const errorMessages = {
   mismatch: "Passwords do not match",
   empty: "",
-  reqiuired: "Missing required fields",
+  required: "Missing required fields",
   invalidEmail: "Email is invalid",
   passwordLength: "Password must be 12 character minimum.",
+  genericPasswordError: "Error found with password",
 };
 
 const clearError = {
@@ -18,7 +20,7 @@ const clearError = {
 
 const requiredFieldsError = {
   status: true,
-  message: errorMessages.reqiuired,
+  message: errorMessages.required,
 };
 
 const emailRegEx =
@@ -63,6 +65,7 @@ function LoginForm() {
     if (event.target.value.length < 12) {
       setPasswordError({
         status: true,
+        message: errorMessages.passwordLength,
       });
     } else {
       setPasswordError(clearError);
@@ -86,7 +89,7 @@ function LoginForm() {
     alert("Welcome " + email);
   };
 
-  const onCreateAccount = (event) => {
+  const onCreateAccount = async (event) => {
     event.preventDefault();
 
     // When submitting with null fields
@@ -120,13 +123,41 @@ function LoginForm() {
       passwordVerificationError.status ||
       passwordError.status
     ) {
-      console.log("Can't save");
       return;
     }
 
-    // Handle api call here
-    console.log("save");
-    navigate("/dashboard");
+    try {
+      const response = await createAccount(email, password);
+      console.log(response);
+      // Missing cookies
+      // Move to navigate to dashboard
+      // navigate("/dashboard");
+    } catch (error) {
+      const errorResponse = error.response;
+
+      if (errorResponse && errorResponse.status == 400) {
+        let {
+          email: emailError,
+          password: passwordError,
+          encrypted_symmetric_key: keyError,
+        } = errorResponse.data;
+
+        if (emailError) {
+          setEmailError({ status: true, message: emailError[0] });
+        }
+
+        if (passwordError || keyError) {
+          setPasswordError({
+            status: true,
+            message: errorMessages.genericPasswordError,
+          });
+        }
+        return;
+      }
+
+      console.log("Extra errors:" + error);
+      return;
+    }
   };
 
   return (
@@ -198,7 +229,7 @@ function LoginForm() {
                 id="password-signup"
                 label="Password"
                 variant="outlined"
-                helperText={errorMessages.passwordLength}
+                helperText={passwordError.message}
               />
               <TextField
                 error={passwordVerificationError.status}
@@ -210,6 +241,10 @@ function LoginForm() {
                 variant="outlined"
                 helperText={passwordVerificationError.message}
               />
+              <h3>Requirements:</h3>
+              <ul>
+                <li>Password must be 12 character minimum</li>
+              </ul>
               <Button
                 variant="contained"
                 type="submit"
