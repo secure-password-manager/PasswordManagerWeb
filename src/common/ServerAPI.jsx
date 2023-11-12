@@ -5,7 +5,7 @@ import {
   encryptSymmetricKey,
   generateSymmetricKey,
 } from "../lib/encryption";
-import { CREATE_ACCOUNT_URL } from "../config/AppConstant";
+import { CREATE_ACCOUNT_URL, LOGIN_ACCOUNT_URL } from "../config/AppConstant";
 
 async function createAccount(email, password) {
   const masterKey = await deriveMasterKey(email, password);
@@ -28,4 +28,19 @@ async function createAccount(email, password) {
   });
 }
 
-export { createAccount };
+async function loginAccount(email, password) {
+  const masterKey = await deriveMasterKey(email, password);
+  const passwordHash = await deriveMasterPasswordHash(password, masterKey);
+
+  return axios.post(LOGIN_ACCOUNT_URL, {
+    email: email,
+    password: passwordHash,
+    headers: {
+      withCredentials: true,
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export { createAccount, loginAccount };
