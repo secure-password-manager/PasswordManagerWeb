@@ -155,8 +155,8 @@ function LoginForm() {
 
     try {
       const response = await createAccount(email, password);
-      alert("Created Account");
-      navigate("/dashboard");
+      alert("Account created - Login now");
+      window.location.reload();
     } catch (error) {
       const errorResponse = error.response;
 

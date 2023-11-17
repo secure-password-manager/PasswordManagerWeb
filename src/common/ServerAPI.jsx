@@ -16,31 +16,39 @@ async function createAccount(email, password) {
     masterKey
   );
 
-  return axios.post(CREATE_ACCOUNT_URL, {
-    email: email,
-    password: passwordHash,
-    encrypted_symmetric_key: encryptedSymetricKey,
-    headers: {
-      withCredentials: true,
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
+  return axios.post(
+    CREATE_ACCOUNT_URL,
+    {
+      email: email,
+      password: passwordHash,
+      encrypted_symmetric_key: encryptedSymetricKey,
     },
-  });
+    {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 }
 
 async function loginAccount(email, password) {
   const masterKey = await deriveMasterKey(email, password);
   const passwordHash = await deriveMasterPasswordHash(password, masterKey);
 
-  return axios.post(LOGIN_ACCOUNT_URL, {
-    email: email,
-    password: passwordHash,
-    headers: {
-      withCredentials: true,
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
+  return axios.post(
+    LOGIN_ACCOUNT_URL,
+    {
+      email: email,
+      password: passwordHash,
     },
-  });
+    {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 }
 
 export { createAccount, loginAccount };
