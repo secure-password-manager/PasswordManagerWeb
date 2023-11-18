@@ -1,4 +1,4 @@
-import axios from "axios";
+import { default as axios } from "../common/CustomAxios";
 import {
   deriveMasterKey,
   deriveMasterPasswordHash,
@@ -23,12 +23,6 @@ async function createAccount(email, password) {
       password: passwordHash,
       encrypted_symmetric_key: encryptedSymetricKey,
     },
-    {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
   );
 }
 
@@ -42,12 +36,6 @@ async function loginAccount(email, password) {
       email: email,
       password: passwordHash,
     },
-    {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
   );
 }
 
