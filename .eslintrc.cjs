@@ -32,5 +32,6 @@ module.exports = {
         'after': true,
       },
     ],
+    "react/prop-types": "off",
   },
 }
