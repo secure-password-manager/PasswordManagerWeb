@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { Tab, Tabs, TextField, Stack, Button, Container } from "@mui/material";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import { createAccount, loginAccount } from "../common/ServerAPI";
 
 const errorMessages = {
   mismatch: "Passwords do not match",
   empty: "",
-  reqiuired: "Missing required fields",
+  required: "Missing required fields",
   invalidEmail: "Email is invalid",
   passwordLength: "Password must be 12 character minimum.",
+  genericPasswordError: "Error found with password",
+  loginFailure: "Failed to login - Check email or password",
 };
 
 const clearError = {
@@ -18,7 +21,12 @@ const clearError = {
 
 const requiredFieldsError = {
   status: true,
-  message: errorMessages.reqiuired,
+  message: errorMessages.required,
+};
+
+const loginError = {
+  status: true,
+  message: errorMessages.loginFailure,
 };
 
 const emailRegEx =
@@ -51,7 +59,7 @@ function LoginForm() {
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
-    if (!emailRegEx.test(event.target.value)) {
+    if (currentTabIndex === 1 && !emailRegEx.test(event.target.value)) {
       setEmailError({ status: true, message: errorMessages.invalidEmail });
     } else {
       setEmailError(clearError);
@@ -60,9 +68,10 @@ function LoginForm() {
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
-    if (event.target.value.length < 12) {
+    if (currentTabIndex === 1 && event.target.value.length < 12) {
       setPasswordError({
         status: true,
+        message: errorMessages.passwordLength,
       });
     } else {
       setPasswordError(clearError);
@@ -81,12 +90,33 @@ function LoginForm() {
     }
   };
 
-  const onLogin = (event) => {
+  const onLogin = async (event) => {
     event.preventDefault();
-    alert("Welcome " + email);
+
+    // Client side only checks if null
+    if (password === "" || email === "") {
+      if (password === "") {
+        setPasswordError(requiredFieldsError);
+      }
+      if (email === "") {
+        setEmailError(requiredFieldsError);
+      }
+      return;
+    }
+
+    try {
+      const response = await loginAccount(email, password);
+      alert("Logging into account");
+      navigate("/dashboard");
+    } catch (error) {
+      setPasswordError(loginError);
+      setEmailError(loginError);
+
+      return;
+    }
   };
 
-  const onCreateAccount = (event) => {
+  const onCreateAccount = async (event) => {
     event.preventDefault();
 
     // When submitting with null fields
@@ -120,13 +150,37 @@ function LoginForm() {
       passwordVerificationError.status ||
       passwordError.status
     ) {
-      console.log("Can't save");
       return;
     }
 
-    // Handle api call here
-    console.log("save");
-    navigate("/dashboard");
+    try {
+      const response = await createAccount(email, password);
+      alert("Account created - Login now");
+      window.location.reload();
+    } catch (error) {
+      const errorResponse = error.response;
+
+      if (errorResponse && errorResponse.status == 400) {
+        let {
+          email: emailError,
+          password: passwordError,
+          encrypted_symmetric_key: keyError,
+        } = errorResponse.data;
+
+        if (emailError) {
+          setEmailError({ status: true, message: emailError[0] });
+        }
+
+        if (passwordError || keyError) {
+          setPasswordError({
+            status: true,
+            message: errorMessages.genericPasswordError,
+          });
+        }
+        return;
+      }
+      return;
+    }
   };
 
   return (
@@ -151,20 +205,23 @@ function LoginForm() {
             <Stack spacing={2}>
               <TextField
                 onChange={handleEmailChange}
+                error={emailError.status}
                 value={email}
                 type="email"
                 id="email-login"
                 label="Email"
                 variant="outlined"
+                helperText={emailError.message}
               />
               <TextField
                 onChange={handlePasswordChange}
+                error={passwordError.status}
                 value={password}
                 type="password"
                 id="password-login"
                 label="Password"
                 variant="outlined"
-                helperText=""
+                helperText={passwordError.message}
               />
               <Button
                 variant="contained"
@@ -198,7 +255,7 @@ function LoginForm() {
                 id="password-signup"
                 label="Password"
                 variant="outlined"
-                helperText={errorMessages.passwordLength}
+                helperText={passwordError.message}
               />
               <TextField
                 error={passwordVerificationError.status}
@@ -210,6 +267,10 @@ function LoginForm() {
                 variant="outlined"
                 helperText={passwordVerificationError.message}
               />
+              <h3>Requirements:</h3>
+              <ul>
+                <li>Password must be 12 character minimum</li>
+              </ul>
               <Button
                 variant="contained"
                 type="submit"
