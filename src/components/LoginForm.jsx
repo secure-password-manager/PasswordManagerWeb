@@ -3,6 +3,7 @@ import { Tab, Tabs, TextField, Stack, Button, Container } from "@mui/material";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { createAccount, loginAccount } from "../common/ServerAPI";
+import PasswordStrength from "@/components/PasswordStrength";
 
 const errorMessages = {
   mismatch: "Passwords do not match",
@@ -257,6 +258,7 @@ function LoginForm() {
                 variant="outlined"
                 helperText={passwordError.message}
               />
+              <PasswordStrength password={password} />
               <TextField
                 error={passwordVerificationError.status}
                 onChange={handlePasswordVerificationChange}
