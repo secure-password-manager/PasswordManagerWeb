@@ -74,6 +74,7 @@ const NewItemForm = () => {
 
     try {
       let response = await postCollections(collectionName);
+      setCollectionName("");
       handleDialogClose(setCollectionsDialogOpen);
 
       // Get new vault collection items
@@ -150,35 +151,44 @@ const NewItemForm = () => {
     errorStatus = isNullCheck(password, setPasswordError);
     errorStatus = isNullCheck(endpoint, setEndpointError);
     errorStatus = isNullCheck(username, setUserNameError);
+
     if (errorStatus) {
       return;
     }
 
-    try {
-      let vaultItemObject = {
-        name: itemName,
-        url: endpoint,
-        username: username,
-        password: password,
-      };
-      // figoure out symmetricKey
-      let encryptVaultItem = await encryptVaultItem(
-        vaultItemObject,
-        "symmetricKey"
-      );
-    } catch (error) {
-      if (error.response.status === 403) {
-        alert("Please sign in again to continue");
-        navigate("/login-signup");
-        return;
-      }
+    let vaultItemObject = {
+      name: itemName,
+      url: endpoint,
+      username: username,
+      password: password,
+    };
 
-      if (error.response.status === 400) {
-        alert("Failed to access data, try again later");
-        window.location.reload();
-        return;
-      }
-    }
+    console.log("Saving: ", vaultItemObject);
+    // try {
+    //   let vaultItemObject = {
+    //     name: itemName,
+    //     url: endpoint,
+    //     username: username,
+    //     password: password,
+    //   };
+    //   // figure out symmetricKey
+    //   let encryptVaultItem = await encryptVaultItem(
+    //     vaultItemObject,
+    //     "symmetricKey"
+    //   );
+    // } catch (error) {
+    //   if (error.response.status === 403) {
+    //     alert("Please sign in again to continue");
+    //     navigate("/login-signup");
+    //     return;
+    //   }
+
+    //   if (error.response.status === 400) {
+    //     alert("Failed to access data, try again later");
+    //     window.location.reload();
+    //     return;
+    //   }
+    // }
   };
 
   const isNullCheck = (field, errorHandler) => {
