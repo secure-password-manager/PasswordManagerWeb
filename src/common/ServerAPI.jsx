@@ -19,14 +19,11 @@ async function createAccount(email, password) {
     masterKey
   );
 
-  return axios.post(
-    CREATE_ACCOUNT_URL,
-    {
-      email: email,
-      password: passwordHash,
-      encrypted_symmetric_key: encryptedSymetricKey,
-    },
-  );
+  return axios.post(CREATE_ACCOUNT_URL, {
+    email: email,
+    password: passwordHash,
+    encrypted_symmetric_key: encryptedSymetricKey,
+  });
 }
 
 async function loginAccount(email, password) {
@@ -72,4 +69,21 @@ async function decryptItems(items, symmetricKey) {
 
 }
 
-export { createAccount, getUserData, loginAccount };
+async function getCollections() {
+  return axios.get(COLLECTIONS_URL);
+}
+
+async function postCollections(collectionName) {
+  return axios.post(COLLECTIONS_URL, {
+    name: collectionName,
+  });
+}
+
+async function postVaultItem(encryptedItem, collectionUUID) {
+  return axios.post(COLLECTIONS_URL, {
+    encrypted_data: encryptedItem,
+    vault_collection: collectionUUID,
+  });
+}
+
+export { createAccount, getUserData, loginAccount, getCollections, postCollections, postVaultItem };

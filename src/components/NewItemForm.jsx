@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Menu,
@@ -13,6 +13,25 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import { getCollections, postCollections } from "../common/ServerAPI";
+import { useNavigate } from "react-router-dom";
+import { encryptVaultItem } from "../lib/encryption";
+
+// TODO: extract these out to common file
+const errorMessages = {
+  empty: "",
+  required: "Missing required fields",
+};
+
+const clearError = {
+  status: false,
+  message: errorMessages.empty,
+};
+
+const requiredFieldsError = {
+  status: true,
+  message: errorMessages.required,
+};
 
 // Receive collections for vault items as props
 const NewItemForm = () => {
@@ -36,14 +55,40 @@ const NewItemForm = () => {
   };
 
   const handleDialogClose = (dialogState) => {
-    setAnchorEl(null);
+    handleMenuClose();
+    clearAllErrors();
     dialogState(false);
   };
 
+  const navigate = useNavigate();
   // Collections Form
   const [collectionName, setCollectionName] = useState("");
-  const onSaveCollection = () => {
-    console.log(collectionName);
+  const [collectionError, setCollectionError] = useState(clearError);
+  const onSaveCollection = async () => {
+    if (collectionName === "") {
+      setCollectionError(requiredFieldsError);
+      return;
+    } else {
+      setCollectionError(clearError);
+    }
+
+    try {
+      let response = await postCollections(collectionName);
+      handleDialogClose(setCollectionsDialogOpen);
+
+      // Get new vault collection items
+      getVaultCollections();
+    } catch (error) {
+      if (error.response.status === 403) {
+        alert("Please sign in again to continue");
+        navigate("/login-signup");
+        return;
+      }
+
+      if (error.response.status === 400) {
+        setCollectionError(requiredFieldsError);
+      }
+    }
   };
 
   // Vault Items
@@ -55,14 +100,101 @@ const NewItemForm = () => {
   const [endpoint, setEndpoint] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUserName] = useState("");
+  const [itemNameError, setItemNameError] = useState(clearError);
+  const [endpointError, setEndpointError] = useState(clearError);
+  const [passwordError, setPasswordError] = useState(clearError);
+  const [usernameError, setUserNameError] = useState(clearError);
+
   const [collectionID, setCollectionID] = useState("");
+  const [collectionArray, setCollectionArray] = useState([]);
+  const [defaultCollectionsID, setDefaultCollectionID] = useState("");
 
   const handleCollectionChange = (event) => {
     setCollectionID(event.target.value);
   };
 
-  const onSaveVaultItem = () => {
-    console.log("status");
+  const getVaultCollections = async () => {
+    try {
+      let response = await getCollections(getCollections);
+      setCollectionArray(response.data);
+
+      for (let i = 0; i < response.data.length; i++) {
+        let collection = response.data[i];
+        if (collection.name == "Default") {
+          setDefaultCollectionID(collection.uuid);
+          setCollectionID(collection.uuid);
+        }
+      }
+    } catch (error) {
+      if (error.response.status === 403) {
+        alert("Please sign in again to continue");
+        navigate("/login-signup");
+        return;
+      }
+
+      if (error.response.status === 400) {
+        alert("Failed to access data, try again later");
+        window.location.reload();
+        return;
+      }
+    }
+  };
+
+  useEffect(() => {
+    getVaultCollections();
+  }, []);
+
+  const onSaveVaultItem = async () => {
+    let errorStatus = false;
+    errorStatus = isNullCheck(itemName, setItemNameError);
+    errorStatus = isNullCheck(password, setPasswordError);
+    errorStatus = isNullCheck(endpoint, setEndpointError);
+    errorStatus = isNullCheck(username, setUserNameError);
+    if (errorStatus) {
+      return;
+    }
+
+    try {
+      let vaultItemObject = {
+        name: itemName,
+        url: endpoint,
+        username: username,
+        password: password,
+      };
+      // figoure out symmetricKey
+      let encryptVaultItem = await encryptVaultItem(
+        vaultItemObject,
+        "symmetricKey"
+      );
+    } catch (error) {
+      if (error.response.status === 403) {
+        alert("Please sign in again to continue");
+        navigate("/login-signup");
+        return;
+      }
+
+      if (error.response.status === 400) {
+        alert("Failed to access data, try again later");
+        window.location.reload();
+        return;
+      }
+    }
+  };
+
+  const isNullCheck = (field, errorHandler) => {
+    if (field === "") {
+      errorHandler(requiredFieldsError);
+      return true;
+    }
+    return false;
+  };
+
+  const clearAllErrors = () => {
+    setCollectionError(clearError);
+    setItemNameError(clearError);
+    setEndpointError(clearError);
+    setPasswordError(clearError);
+    setUserNameError(clearError);
   };
 
   return (
@@ -88,7 +220,10 @@ const NewItemForm = () => {
           <DialogTitle>Add a new collection</DialogTitle>
           <DialogContent>
             <TextField
+              margin="dense"
               label="Collection Name"
+              error={collectionError.status}
+              helperText={collectionError.message}
               value={collectionName}
               onChange={(event) => setCollectionName(event.target.value)}
             />
@@ -119,6 +254,8 @@ const NewItemForm = () => {
                 <TextField
                   label="Name"
                   value={itemName}
+                  error={itemNameError.status}
+                  helperText={itemNameError.message}
                   onChange={(event) => setItemName(event.target.value)}
                 />
               </Grid>
@@ -126,6 +263,8 @@ const NewItemForm = () => {
                 <TextField
                   label="URL"
                   value={endpoint}
+                  error={endpointError.status}
+                  helperText={endpointError.message}
                   onChange={(event) => setEndpoint(event.target.value)}
                 />
               </Grid>
@@ -133,6 +272,8 @@ const NewItemForm = () => {
                 <TextField
                   label="Username"
                   value={username}
+                  error={usernameError.status}
+                  helperText={usernameError.message}
                   onChange={(event) => setUserName(event.target.value)}
                 />
               </Grid>
@@ -141,6 +282,8 @@ const NewItemForm = () => {
                 <TextField
                   label="Password"
                   value={password}
+                  error={passwordError.status}
+                  helperText={passwordError.message}
                   onChange={(event) => setPassword(event.target.value)}
                 />
               </Grid>
@@ -152,12 +295,17 @@ const NewItemForm = () => {
                   <Select
                     labelId="CollectionSelctor"
                     label="CollectionSelctor"
+                    defaultValue={defaultCollectionsID}
                     value={collectionID}
                     onChange={handleCollectionChange}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {collectionArray.map((collection) => {
+                      return (
+                        <MenuItem value={collection.uuid} key={collection.uuid}>
+                          {collection.name}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
