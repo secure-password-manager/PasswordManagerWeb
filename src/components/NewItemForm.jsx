@@ -158,15 +158,31 @@ const NewItemForm = () => {
       password: password,
     };
 
-    console.log(vaultItemObject);
+    console.log("Saving: ", vaultItemObject);
     // try {
-    //   let response = await postVaultItem(
+    //   let vaultItemObject = {
+    //     name: itemName,
+    //     url: endpoint,
+    //     username: username,
+    //     password: password,
+    //   };
+    //   // figure out symmetricKey
+    //   let encryptVaultItem = await encryptVaultItem(
     //     vaultItemObject,
-    //     symmetricKey,
-    //     collectionID
+    //     "symmetricKey"
     //   );
     // } catch (error) {
-    //   networkErrorHandler(error);
+    //   if (error.response.status === 403) {
+    //     alert("Please sign in again to continue");
+    //     navigate("/login-signup");
+    //     return;
+    //   }
+
+    //   if (error.response.status === 400) {
+    //     alert("Failed to access data, try again later");
+    //     window.location.reload();
+    //     return;
+    //   }
     // }
   };
 
