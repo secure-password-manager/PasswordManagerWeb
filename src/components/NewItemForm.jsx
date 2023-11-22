@@ -57,6 +57,7 @@ const NewItemForm = () => {
   const handleDialogClose = (dialogState) => {
     handleMenuClose();
     clearAllErrors();
+    clearAllInputs();
     dialogState(false);
   };
 
@@ -76,7 +77,11 @@ const NewItemForm = () => {
       let response = await postCollections(collectionName);
       setCollectionName("");
       handleDialogClose(setCollectionsDialogOpen);
-
+      (prevData) => [...prevData, data1];
+      setCollectionArray((currentCollections) => [
+        ...currentCollections,
+        response.data,
+      ]);
       // Get new vault collection items
       getVaultCollections();
     } catch (error) {
@@ -205,6 +210,14 @@ const NewItemForm = () => {
     setEndpointError(clearError);
     setPasswordError(clearError);
     setUserNameError(clearError);
+  };
+
+  const clearAllInputs = () => {
+    setItemName("");
+    setEndpoint("");
+    setPassword("");
+    setUserName("");
+    setCollectionName("");
   };
 
   return (
