@@ -1,6 +1,5 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
-
+import { Outlet, Link, useLocation } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import { Box, Typography } from "@mui/material";
@@ -9,6 +8,10 @@ import { collections, items } from "../config/data/splitSampleData";
 import NewItemForm from "../components/NewItemForm";
 
 function DashboardPage() {
+  const location = useLocation();
+  const symmetricKey = location.state.symmetricKey;
+  console.log(`symmetric key from location state: ${symmetricKey}`);
+
   return (
     <>
       <NavBar />
