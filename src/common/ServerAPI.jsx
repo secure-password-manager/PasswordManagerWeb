@@ -1,5 +1,6 @@
 import { default as axios } from "../common/CustomAxios";
 import {
+  decryptSymmetricKey,
   deriveMasterKey,
   deriveMasterPasswordHash,
   encryptSymmetricKey,
@@ -30,13 +31,23 @@ async function loginAccount(email, password) {
   const masterKey = await deriveMasterKey(email, password);
   const passwordHash = await deriveMasterPasswordHash(password, masterKey);
 
-  return axios.post(
-    LOGIN_ACCOUNT_URL,
-    {
-      email: email,
-      password: passwordHash,
-    },
-  );
+  try {
+      const response = await axios.post(
+          LOGIN_ACCOUNT_URL,
+          {
+              email: email,
+              password: passwordHash,
+          },
+      );
+
+      const encryptedSymmetricKey = response.data.encrypted_symmetric_key;
+      const symmetricKey = await decryptSymmetricKey(encryptedSymmetricKey, masterKey);
+
+      return Promise.resolve(symmetricKey);
+
+  } catch(error) {
+      return Promise.reject(error);
+  }
 }
 
 export { createAccount, loginAccount };
