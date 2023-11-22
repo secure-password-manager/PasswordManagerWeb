@@ -1,27 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import React from "react";
+import { Outlet, Link } from "react-router-dom";
 
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import { Box, Typography } from "@mui/material";
 import VaultItemTiles from "../components/VaultItemTiles";
-import { getUserData } from "../common/ServerAPI";
+import { collections, items } from "../config/data/splitSampleData";
 import NewItemForm from "../components/NewItemForm";
 
 function DashboardPage() {
-  const location = useLocation();
-  const [collections, setCollections] = useState([]);
-  const [items, setItems] = useState({});
-  
-  const symmetricKey = location.state.symmetricKey;
-
-  useEffect(() => {
-      getUserData(symmetricKey).then((data) => {
-          setCollections(data.collections);
-          setItems(data.items);
-      })
-  },[]);
-
   return (
     <>
       <NavBar />
