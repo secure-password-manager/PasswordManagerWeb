@@ -107,9 +107,9 @@ function LoginForm() {
     }
 
     try {
-      const response = await loginAccount(email, password);
+      const symmetricKey = await loginAccount(email, password);
       alert("Logging into account");
-      navigate("/dashboard");
+      navigate("/dashboard", { state: { symmetricKey: symmetricKey } });
     } catch (error) {
       setPasswordError(loginError);
       setEmailError(loginError);
