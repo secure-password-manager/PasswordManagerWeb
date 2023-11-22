@@ -68,6 +68,7 @@ async function decryptItems(items, symmetricKey) {
   }
 
   return items;
+
 }
 
 export { createAccount, getUserData, loginAccount };
