@@ -13,6 +13,7 @@ import PasswordGenerator from "../lib/passwordGenerator";
 
 const PasswordGeneratorField = (props) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const { password, passwordError, setPassword } = props;
 
@@ -20,6 +21,7 @@ const PasswordGeneratorField = (props) => {
   const copyPassword = () => {
     if (password) {
       navigator.clipboard.writeText(password);
+      setOpenSnackbar(true);
     }
   }
   const generatePassword = () => {
@@ -68,6 +70,12 @@ const PasswordGeneratorField = (props) => {
             </>
           ),
         }}
+      />
+      <SnackBar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        duration={2000}
+        open={openSnackbar}
+        setOpenSnackbar={setOpenSnackbar}
       />
     </>
   );
