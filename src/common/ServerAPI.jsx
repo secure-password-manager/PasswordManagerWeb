@@ -1,12 +1,13 @@
 import { default as axios } from "../common/CustomAxios";
 import {
   decryptSymmetricKey,
+  decryptVaultItem,
   deriveMasterKey,
   deriveMasterPasswordHash,
   encryptSymmetricKey,
   generateSymmetricKey,
 } from "../lib/encryption";
-import { CREATE_ACCOUNT_URL, LOGIN_ACCOUNT_URL } from "../config/AppConstant";
+import { COLLECTIONS_URL, CREATE_ACCOUNT_URL, ITEM_URL, LOGIN_ACCOUNT_URL } from "../config/AppConstant";
 
 async function createAccount(email, password) {
   const masterKey = await deriveMasterKey(email, password);
@@ -50,4 +51,33 @@ async function loginAccount(email, password) {
   }
 }
 
-export { createAccount, loginAccount };
+async function getUserData(symmetricKey) {
+    try {
+        const collectionResponse = await axios.get(
+            COLLECTIONS_URL
+        );
+        let itemResponse = await axios.get(
+            ITEM_URL
+        );
+
+        const collections = collectionResponse.data;
+        let items = itemResponse.data;
+
+        items = await decryptItems(items, symmetricKey);
+
+        return Promise.resolve({collections, items});
+    } catch(error) {
+        return Promise.reject(error);
+    }
+}
+
+async function decryptItems(items, symmetricKey) {
+    for(let key in items) {
+        let vaultItem = await decryptVaultItem(items[key]["encrypted_data"], symmetricKey);
+        items[key]["data"] = JSON.parse(vaultItem);
+    }
+
+    return items;
+}
+
+export { createAccount, getUserData, loginAccount };
