@@ -121,9 +121,7 @@ const NewItemForm = () => {
       let collectionResponse = await getCollections(getCollections);
       let keyResponse = await getUserKey();
       setCollectionArray(collectionResponse.data);
-
-      // We need to decrypt this in the future for vault items
-      let encryptedSymmetricKey = keyResponse.data.encrypted_symmetric_key;
+      setSymmetricKey(keyResponse.data.encrypted_symmetric_key);
       for (let i = 0; i < collectionResponse.data.length; i++) {
         let collection = collectionResponse.data[i];
         if (collection.name == "Default") {
@@ -158,31 +156,15 @@ const NewItemForm = () => {
       password: password,
     };
 
-    console.log("Saving: ", vaultItemObject);
+    console.log(vaultItemObject);
     // try {
-    //   let vaultItemObject = {
-    //     name: itemName,
-    //     url: endpoint,
-    //     username: username,
-    //     password: password,
-    //   };
-    //   // figure out symmetricKey
-    //   let encryptVaultItem = await encryptVaultItem(
+    //   let response = await postVaultItem(
     //     vaultItemObject,
-    //     "symmetricKey"
+    //     symmetricKey,
+    //     collectionID
     //   );
     // } catch (error) {
-    //   if (error.response.status === 403) {
-    //     alert("Please sign in again to continue");
-    //     navigate("/login-signup");
-    //     return;
-    //   }
-
-    //   if (error.response.status === 400) {
-    //     alert("Failed to access data, try again later");
-    //     window.location.reload();
-    //     return;
-    //   }
+    //   networkErrorHandler(error);
     // }
   };
 
