@@ -123,7 +123,9 @@ const NewItemForm = () => {
       let collectionResponse = await getCollections(getCollections);
       let keyResponse = await getUserKey();
       setCollectionArray(collectionResponse.data);
-      setSymmetricKey(keyResponse.data.encrypted_symmetric_key);
+
+      // We need to decrypt this in the future
+      let encryptedSymmetricKey = keyResponse.data.encrypted_symmetric_key;
       for (let i = 0; i < collectionResponse.data.length; i++) {
         let collection = collectionResponse.data[i];
         if (collection.name == "Default") {
