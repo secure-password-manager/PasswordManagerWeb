@@ -75,6 +75,7 @@ async function decryptItems(items, symmetricKey) {
     for(let key in items) {
         let vaultItem = await decryptVaultItem(items[key]["encrypted_data"], symmetricKey);
         items[key]["data"] = JSON.parse(vaultItem);
+        delete items[key]["encrypted_data"]
     }
 
     return items;
