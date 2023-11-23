@@ -7,8 +7,9 @@ import {
   deriveMasterPasswordHash,
   encryptSymmetricKey,
   generateSymmetricKey,
+  encryptVaultItem,
 } from "../lib/encryption";
-import { COLLECTIONS_URL, CREATE_ACCOUNT_URL, ITEM_URL, LOGIN_ACCOUNT_URL } from "../config/AppConstant";
+import { COLLECTIONS_URL, CREATE_ACCOUNT_URL, ITEM_URL, LOGIN_ACCOUNT_URL, USER_KEY } from "../config/AppConstant";
 
 async function createAccount(email, password) {
   const masterKey = await deriveMasterKey(email, password);
@@ -69,6 +70,10 @@ async function decryptItems(items, symmetricKey) {
 
 }
 
+async function getUserKey() {
+  return axios.get(USER_KEY);
+}
+
 async function getCollections() {
   return axios.get(COLLECTIONS_URL);
 }
@@ -79,11 +84,19 @@ async function postCollections(collectionName) {
   });
 }
 
-async function postVaultItem(encryptedItem, collectionUUID) {
+async function postVaultItem(item, key, collectionUUID) {
   return axios.post(COLLECTIONS_URL, {
-    encrypted_data: encryptedItem,
+    encrypted_data: await encryptVaultItem(item, key),
     vault_collection: collectionUUID,
   });
 }
 
-export { createAccount, getUserData, loginAccount, getCollections, postCollections, postVaultItem };
+export {
+  createAccount,
+  getCollections,
+  getUserData,
+  getUserKey,
+  loginAccount,
+  postCollections,
+  postVaultItem,
+};

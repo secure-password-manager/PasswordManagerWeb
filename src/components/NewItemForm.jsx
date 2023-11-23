@@ -13,9 +13,13 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { getCollections, postCollections } from "../common/ServerAPI";
+import {
+  getCollections,
+  postCollections,
+  getUserKey,
+  postVaultItem,
+} from "../common/ServerAPI";
 import { useNavigate } from "react-router-dom";
-import { encryptVaultItem } from "../lib/encryption";
 
 // TODO: extract these out to common file
 const errorMessages = {
@@ -85,15 +89,8 @@ const NewItemForm = () => {
       // Get new vault collection items
       getVaultCollections();
     } catch (error) {
-      if (error.response.status === 403) {
-        alert("Please sign in again to continue");
-        navigate("/login-signup");
-        return;
-      }
-
-      if (error.response.status === 400) {
-        setCollectionError(requiredFieldsError);
-      }
+      networkErrorHandler(error);
+      return;
     }
   };
 
@@ -115,39 +112,32 @@ const NewItemForm = () => {
   const [collectionArray, setCollectionArray] = useState([]);
   const [defaultCollectionsID, setDefaultCollectionID] = useState("");
 
+  const [symmetricKey, setSymmetricKey] = useState("");
+
   const handleCollectionChange = (event) => {
     setCollectionID(event.target.value);
   };
 
-  const getVaultCollections = async () => {
+  const getUserItems = async () => {
     try {
-      let response = await getCollections(getCollections);
-      setCollectionArray(response.data);
-
-      for (let i = 0; i < response.data.length; i++) {
-        let collection = response.data[i];
+      let collectionResponse = await getCollections(getCollections);
+      let keyResponse = await getUserKey();
+      setCollectionArray(collectionResponse.data);
+      setSymmetricKey(keyResponse.data.encrypted_symmetric_key);
+      for (let i = 0; i < collectionResponse.data.length; i++) {
+        let collection = collectionResponse.data[i];
         if (collection.name == "Default") {
           setDefaultCollectionID(collection.uuid);
           setCollectionID(collection.uuid);
         }
       }
     } catch (error) {
-      if (error.response.status === 403) {
-        alert("Please sign in again to continue");
-        navigate("/login-signup");
-        return;
-      }
-
-      if (error.response.status === 400) {
-        alert("Failed to access data, try again later");
-        window.location.reload();
-        return;
-      }
+      networkErrorHandler(error);
     }
   };
 
   useEffect(() => {
-    getVaultCollections();
+    getUserItems();
   }, []);
 
   const onSaveVaultItem = async () => {
@@ -168,31 +158,15 @@ const NewItemForm = () => {
       password: password,
     };
 
-    console.log("Saving: ", vaultItemObject);
+    console.log(vaultItemObject);
     // try {
-    //   let vaultItemObject = {
-    //     name: itemName,
-    //     url: endpoint,
-    //     username: username,
-    //     password: password,
-    //   };
-    //   // figure out symmetricKey
-    //   let encryptVaultItem = await encryptVaultItem(
+    //   let response = await postVaultItem(
     //     vaultItemObject,
-    //     "symmetricKey"
+    //     symmetricKey,
+    //     collectionID
     //   );
     // } catch (error) {
-    //   if (error.response.status === 403) {
-    //     alert("Please sign in again to continue");
-    //     navigate("/login-signup");
-    //     return;
-    //   }
-
-    //   if (error.response.status === 400) {
-    //     alert("Failed to access data, try again later");
-    //     window.location.reload();
-    //     return;
-    //   }
+    //   networkErrorHandler(error);
     // }
   };
 
@@ -220,6 +194,20 @@ const NewItemForm = () => {
     setCollectionName("");
   };
 
+  const networkErrorHandler = (error) => {
+    if (error.response.status === 403) {
+      alert("Please sign in again to continue");
+      navigate("/login-signup");
+      return;
+    }
+
+    if (error.response.status === 400) {
+      alert("Failed to access data, try again later");
+      window.location.reload();
+      return;
+    }
+  };
+
   return (
     <>
       <Button variant="contained" onClick={handleMenuClick}>
@@ -239,6 +227,11 @@ const NewItemForm = () => {
         <Dialog
           open={collectionsDialogOpen}
           onClose={() => handleDialogClose(setCollectionsDialogOpen)}
+          onKeyDown={(event) => {
+            if (event.key === "Tab") {
+              event.stopPropagation();
+            }
+          }}
         >
           <DialogTitle>Add a new collection</DialogTitle>
           <DialogContent>
@@ -264,6 +257,11 @@ const NewItemForm = () => {
         <Dialog
           open={vaultDialogOpen}
           onClose={() => handleDialogClose(setVaultDialogOpen)}
+          onKeyDown={(event) => {
+            if (event.key === "Tab") {
+              event.stopPropagation();
+            }
+          }}
         >
           <DialogTitle>Add a new vault item</DialogTitle>
           <DialogContent>
