@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Tab, Tabs, TextField, Stack, Button, Container } from "@mui/material";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+
 import { createAccount, loginAccount } from "../common/ServerAPI";
-import PasswordStrength from "@/components/PasswordStrength";
 import BasicTabs from "./NavBar";
+import PasswordStrength from "../components/PasswordStrength";
+import { useGlobalStore } from "../common/useGlobalStore";
 
 const errorMessages = {
   mismatch: "Passwords do not match",
@@ -48,6 +50,7 @@ function LoginForm() {
     useState(clearError);
 
   const navigate = useNavigate();
+  const setSymmetricKey = useGlobalStore((state) => state.setSymmetricKey)
 
   const handleTabChange = (event, tabIndex) => {
     setCurrentTabIndex(tabIndex);
@@ -107,7 +110,8 @@ function LoginForm() {
     }
 
     try {
-      const response = await loginAccount(email, password);
+      const symmetricKey = await loginAccount(email, password);
+      setSymmetricKey(symmetricKey);
       alert("Logging into account");
       navigate("/dashboard");
     } catch (error) {
