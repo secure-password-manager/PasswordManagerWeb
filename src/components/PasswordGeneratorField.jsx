@@ -17,6 +17,13 @@ const PasswordGeneratorField = (props) => {
 
   const { password, passwordError, setPassword } = props;
 
+  const pwg = new PasswordGenerator({
+    includeUpper: true,
+    includeLower: true,
+    includeSymbol: false, // Setting to false since symbols can cause some illegal values for certain sites. If we extend our UI functionality in the future, users can select or deselect all these options.
+    includeNumber: true,
+  });
+
   const showHidePassword = () => setShowPassword(!showPassword);
   const copyPassword = () => {
     if (password) {
@@ -27,13 +34,6 @@ const PasswordGeneratorField = (props) => {
   const generatePassword = () => {
     setPassword(pwg.getRandomPassword());
   };
-
-  const pwg = new PasswordGenerator({
-    includeUpper: true,
-    includeLower: true,
-    includeSymbol: true,
-    includeNumber: true,
-  });
 
   return (
     <>
