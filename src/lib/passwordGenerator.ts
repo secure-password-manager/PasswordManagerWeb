@@ -5,59 +5,83 @@ interface passwordProps {
   includeNumber : boolean;
 }
 
+interface characterProps {
+  _upperCase : string;
+  _lowerCase : string;
+  _symbols : string;
+  _numbers : string;
+}
+
 export default class PasswordGenerator {
-  characters : string = "";
-  passwordLen : number = 12;
+  private _characters : characterProps = {
+    _upperCase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    _lowerCase: "abcdefghijklmnopqrstuvwxyz",
+    _symbols: "!@#$%^&*",
+    _numbers: "0123456789",
+  };
+  private _passwordLen : number = 12;
+  private _upperCase : boolean;
+  private _lowerCase : boolean;
+  private _symbols : boolean;
+  private _numbers : boolean;
 
   constructor(passwordProps : passwordProps, pwdLength ?: number) {
     const { includeUpper, includeLower, includeSymbol, includeNumber } =
       passwordProps;
     if (pwdLength) this.passwordLength = pwdLength;
-    this.upperCase = includeUpper;
-    this.lowerCase = includeLower;
-    this.symbols = includeSymbol;
-    this.number = includeNumber;
+    this.includeUpper = includeUpper;
+    this.includeLower = includeLower;
+    this.includeSymbol = includeSymbol;
+    this.includeNumber = includeNumber;
   }
 
-  set upperCase(isUpperCase : boolean) {
-    if (isUpperCase) {
-      this.characters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    }
+  set includeUpper(includeUpper : boolean) {
+    this._upperCase = includeUpper;
   }
 
-  set lowerCase(isLowerCase : boolean) {
-    if (isLowerCase) {
-      this.characters += "abcdefghijklmnopqrstuvwxyz";
-    }
+  set includeLower(includeLower : boolean) {
+    this._lowerCase = includeLower;
   }
 
-  set symbols(isSymbol : boolean) {
-    if (isSymbol) {
-      this.characters += "!@#$%^&*";
-    }
+  set includeSymbol(includeSymbol : boolean) {
+    this._symbols = includeSymbol;
   }
 
-  set number(isNumeric : boolean) {
-    if (isNumeric) {
-      this.characters += "0123456789";
-    }
+  set includeNumber(includeNumber : boolean) {
+    this._numbers = includeNumber;
   }
 
   set passwordLength(length : number) {
-    this.passwordLen = length;
+    this._passwordLen = length;
   }
 
-  private _getRandomInteger(min : number, max : number) : number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  private _passwordChars() : string {
+    let pwChars = ""
+    for (const key in this._characters){
+      if (this[key]) pwChars += this._characters[key];
+    }
+    return pwChars;
+  }
+
+  private _getRandomIntInclusive(min : number, max : number) : number {
+    const randomBuffer = new Uint32Array(1);
+    window.crypto.getRandomValues(randomBuffer);
+    const randomNumber = randomBuffer[0] / (0xffffffff + 1);
+
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(randomNumber * (max - min + 1)) + min;
   }
 
   getRandomPassword() : string {
     let password = "";
-    if (this.characters.length) {
-      for (let i = 0; i < this.passwordLen; i++) {
+    const selectedChars = this._passwordChars();
+
+    if (selectedChars.length) {
+      for (let i = 0; i < this._passwordLen; i++) {
         password +=
-          this.characters[
-            this._getRandomInteger(0, this.characters.length - 1)
+          selectedChars[
+            this._getRandomIntInclusive(0, selectedChars.length - 1)
           ];
       }
     }
