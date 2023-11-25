@@ -4,7 +4,6 @@ import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { createAccount, loginAccount } from "../common/ServerAPI";
 import PasswordStrength from "@/components/PasswordStrength";
-import BasicTabs from "./NavBar";
 
 const errorMessages = {
   mismatch: "Passwords do not match",
