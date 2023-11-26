@@ -73,6 +73,16 @@ export const generateSymmetricKey = () : ArrayBuffer => {
     return getRandomBytes(32).buffer;
 }
 
+/* Adapted from https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest */
+export const generateSHA1Hash = async (password : string) : Promise<string> => {
+    const data = encoder.encode(password);
+    const hash = await window.crypto.subtle.digest('SHA-1', data);
+    const hashArray = Array.from(new Uint8Array(hash));
+    return hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("")
+}
+
 const cryptoKeyFromKeyBuffer = async (key : ArrayBuffer, usages : Array<KeyUsage>) : Promise<CryptoKey> => {
     const keyAlgorithmParams : AesKeyGenParams = {
         name: 'AES-GCM',
