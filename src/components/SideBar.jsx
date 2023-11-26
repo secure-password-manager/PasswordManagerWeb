@@ -62,9 +62,6 @@ export default function ({ collections }) {
             </div>
           </List>
           <Divider />
-          <Container sx={{ padding: 0.5 }}>
-            <NewItemForm />
-          </Container>
         </Box>
       </Drawer>
       <Toolbar />
