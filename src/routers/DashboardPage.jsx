@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Outlet, Link, useNavigate } from "react-router-dom";
+
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import { Box, Typography } from "@mui/material";
@@ -11,12 +13,22 @@ function DashboardPage() {
   const [collections, setCollections] = useState([]);
   const [items, setItems] = useState({});
   const symmetricKey = useGlobalStore((state) => state.symmetricKey);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getUserData(symmetricKey).then((data) => {
-      setCollections(data.collections);
-      setItems(data.items);
-    });
+    getUserData(symmetricKey)
+      .then((data) => {
+        setCollections(data.collections);
+        setItems(data.items);
+      })
+      .catch((error) => {
+        if(error.response && error.response.status) {
+          if(error.response.status === 403) {
+            navigate('/login-signup');
+          }
+        }
+      }
+    );
   }, [symmetricKey]);
 
   return (
