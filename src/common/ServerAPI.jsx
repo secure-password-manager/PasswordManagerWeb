@@ -32,53 +32,42 @@ async function loginAccount(email, password) {
   const masterKey = await deriveMasterKey(email, password);
   const passwordHash = await deriveMasterPasswordHash(password, masterKey);
 
-  try {
-      const response = await axios.post(
-          LOGIN_ACCOUNT_URL,
-          {
-              email: email,
-              password: passwordHash,
-          },
-      );
+  const response = await axios.post(
+    LOGIN_ACCOUNT_URL,
+    {
+        email: email,
+        password: passwordHash,
+    },
+  );
 
-      const encryptedSymmetricKey = response.data.encrypted_symmetric_key;
-      const symmetricKey = await decryptSymmetricKey(encryptedSymmetricKey, masterKey);
-
-      return Promise.resolve(symmetricKey);
-
-  } catch(error) {
-      return Promise.reject(error);
-  }
+  const encryptedSymmetricKey = response.data.encrypted_symmetric_key;
+  return await decryptSymmetricKey(encryptedSymmetricKey, masterKey);
 }
 
 async function getUserData(symmetricKey) {
-    try {
-        const collectionResponse = await axios.get(
-            COLLECTIONS_URL
-        );
-        let itemResponse = await axios.get(
-            ITEM_URL
-        );
+  const collectionResponse = await axios.get(
+    COLLECTIONS_URL
+  );
+  let itemResponse = await axios.get(
+    ITEM_URL
+  );
 
-        const collections = collectionResponse.data;
-        let items = itemResponse.data;
+  const collections = collectionResponse.data;
+  let items = itemResponse.data;
 
-        items = await decryptItems(items, symmetricKey);
+  items = await decryptItems(items, symmetricKey);
 
-        return Promise.resolve({collections, items});
-    } catch(error) {
-        return Promise.reject(error);
-    }
+  return {collections, items};
 }
 
 async function decryptItems(items, symmetricKey) {
-    for(let key in items) {
-        let vaultItem = await decryptVaultItem(items[key]["encrypted_data"], symmetricKey);
-        items[key]["data"] = JSON.parse(vaultItem);
-        delete items[key]["encrypted_data"]
-    }
+  for(let key in items) {
+    let vaultItem = await decryptVaultItem(items[key]["encrypted_data"], symmetricKey);
+    items[key]["data"] = JSON.parse(vaultItem);
+    delete items[key]["encrypted_data"]
+  }
 
-    return items;
+  return items;
 }
 
 export { createAccount, getUserData, loginAccount };
