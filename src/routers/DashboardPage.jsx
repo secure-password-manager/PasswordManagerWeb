@@ -1,28 +1,26 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
-import sampleData from "../config/data/sampleData";
-import NewItemForm from "../components/NewItemForm";
+import { collections, items } from "../config/data/splitSampleData";
+import NavBar from "../components/NavBar";
+import SideBar from "../components/SideBar";
+import { Box, Typography } from "@mui/material";
+import VaultItemTiles from "../components/VaultItemTiles";
 
 function DashboardPage() {
-  const collections = sampleData;
   return (
     <>
-      <h1>Dashboard Page</h1>
-      <ul>
-        <li>
-          <NewItemForm />
-        </li>
-        {collections.map((collection) => {
-          return (
-            <li key={collection.uuid}>
-              <Link to={`collections/${collection.uuid}`}>
-                {collection.name}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-      <Outlet />
+      <NavBar />
+      <SideBar collections={collections} />
+      <Typography
+        sx={{
+          paddingLeft: 35,
+          fontSize: "h4.fontSize",
+        }}
+      >
+        Dashboard
+      </Typography>
+      <Box sx={{ paddingLeft: 35 }}>
+        <VaultItemTiles items={items} />
+      </Box>
     </>
   );
 }
