@@ -1,5 +1,6 @@
 import { default as axios } from "../common/CustomAxios";
 import {
+  base64ToArrayBuffer,
   decryptSymmetricKey,
   decryptVaultItem,
   deriveMasterKey,
@@ -35,8 +36,8 @@ async function loginAccount(email, password) {
   const response = await axios.post(
     LOGIN_ACCOUNT_URL,
     {
-        email: email,
-        password: passwordHash,
+      email: email,
+      password: passwordHash,
     },
   );
 
@@ -55,7 +56,7 @@ async function getUserData(symmetricKey) {
   const collections = collectionResponse.data;
   let items = itemResponse.data;
 
-  items = await decryptItems(items, symmetricKey);
+  items = await decryptItems(items, base64ToArrayBuffer(symmetricKey));
 
   return {collections, items};
 }

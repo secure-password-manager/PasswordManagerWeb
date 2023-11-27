@@ -7,6 +7,7 @@ import { createAccount, loginAccount } from "../common/ServerAPI";
 import BasicTabs from "./NavBar";
 import PasswordStrength from "../components/PasswordStrength";
 import { useGlobalStore } from "../common/useGlobalStore";
+import { arrayBufferToBase64 } from "../lib/encryption";
 
 const errorMessages = {
   mismatch: "Passwords do not match",
@@ -50,7 +51,7 @@ function LoginForm() {
     useState(clearError);
 
   const navigate = useNavigate();
-  const setSymmetricKey = useGlobalStore((state) => state.setSymmetricKey)
+  const setSymmetricKey = useGlobalStore((state) => state.setSymmetricKey);
 
   const handleTabChange = (event, tabIndex) => {
     setCurrentTabIndex(tabIndex);
@@ -111,7 +112,7 @@ function LoginForm() {
 
     try {
       const symmetricKey = await loginAccount(email, password);
-      setSymmetricKey(symmetricKey);
+      setSymmetricKey(arrayBufferToBase64(symmetricKey));
       alert("Logging into account");
       navigate("/dashboard");
     } catch (error) {
