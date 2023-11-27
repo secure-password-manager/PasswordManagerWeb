@@ -5,32 +5,24 @@ import {
   ListItemButton,
   ListItemText,
   Card,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Stack,
-  TextField,
   Box,
-  Divider,
 } from "@mui/material";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import NewItemForm from "./NewItemForm";
+import VaultItemPopOut from "./VaultItemPopOut";
 
 export default function VaultItemTiles({ items }) {
   const itemsArray = Object.keys(items).map((item) => items[item].data);
   const [open, openValue] = useState(false);
   const [vaultItem, setValue] = useState(0);
 
-  const openPopup = (event, value) => {
+  const openPopup = () => {
     openValue(true);
-    setValue(value);
   };
 
-  const closePopup = () => {
+  function closePopup() {
     openValue(false);
-  };
+  }
 
   return (
     <>
@@ -59,36 +51,15 @@ export default function VaultItemTiles({ items }) {
             </ListItem>
           ))}
         </List>
-        <Dialog open={open} fullWidth maxWidth="sm">
-          <DialogTitle>Account Details</DialogTitle>
-          <DialogContent>
-            <Stack spacing={2} margin={2}>
-              <TextField
-                defaultValue={vaultItem.name}
-                variant="outlined"
-                label="Account Name"
-              ></TextField>
-              <TextField
-                defaultValue={vaultItem.url}
-                variant="outlined"
-                label="URL"
-              ></TextField>
-              <TextField
-                defaultValue={vaultItem.username}
-                variant="outlined"
-                label="Username"
-              ></TextField>
-              <TextField
-                defaultValue={vaultItem.password}
-                variant="outlined"
-                label="Password"
-              ></TextField>
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closePopup}>Close</Button>
-          </DialogActions>
-        </Dialog>
+        <>
+          {open && (
+            <VaultItemPopOut
+              vaultItem={vaultItem}
+              open={open}
+              closePopup={closePopup}
+            />
+          )}
+        </>
       </Box>
     </>
   );
