@@ -16,7 +16,8 @@ export default function VaultItemTiles({ items }) {
   const [open, openValue] = useState(false);
   const [vaultItem, setValue] = useState(0);
 
-  const openPopup = () => {
+  const openPopup = (event, vaultItem) => {
+    setValue(vaultItem);
     openValue(true);
   };
 
