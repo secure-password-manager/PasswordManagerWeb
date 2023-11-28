@@ -122,7 +122,7 @@ const NewItemForm = () => {
       let keyResponse = await getUserKey();
       setCollectionArray(collectionResponse.data);
 
-      // We need to decrypt this in the future
+      // We need to decrypt this in the future for vault items
       let encryptedSymmetricKey = keyResponse.data.encrypted_symmetric_key;
       for (let i = 0; i < collectionResponse.data.length; i++) {
         let collection = collectionResponse.data[i];
@@ -196,6 +196,7 @@ const NewItemForm = () => {
   };
 
   const networkErrorHandler = (error) => {
+    console.log(error);
     if (error.response.status === 403) {
       alert("Please sign in again to continue");
       navigate("/login-signup");
