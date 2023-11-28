@@ -196,7 +196,6 @@ const NewItemForm = () => {
   };
 
   const networkErrorHandler = (error) => {
-    console.log(error);
     if (error.response.status === 403) {
       alert("Please sign in again to continue");
       navigate("/login-signup");
