@@ -81,13 +81,10 @@ const NewItemForm = () => {
       let response = await postCollections(collectionName);
       setCollectionName("");
       handleDialogClose(setCollectionsDialogOpen);
-      (prevData) => [...prevData, data1];
       setCollectionArray((currentCollections) => [
         ...currentCollections,
         response.data,
       ]);
-      // Get new vault collection items
-      getVaultCollections();
     } catch (error) {
       networkErrorHandler(error);
       return;
@@ -118,13 +115,14 @@ const NewItemForm = () => {
     setCollectionID(event.target.value);
   };
 
-  const getUserItems = async () => {
+  // Gets vault collection and keys
+  const getUserDetails = async () => {
     try {
       let collectionResponse = await getCollections(getCollections);
       let keyResponse = await getUserKey();
       setCollectionArray(collectionResponse.data);
 
-      // We need to decrypt this in the future
+      // We need to decrypt this in the future for vault items
       let encryptedSymmetricKey = keyResponse.data.encrypted_symmetric_key;
       for (let i = 0; i < collectionResponse.data.length; i++) {
         let collection = collectionResponse.data[i];
@@ -139,7 +137,7 @@ const NewItemForm = () => {
   };
 
   useEffect(() => {
-    getUserItems();
+    getUserDetails();
   }, []);
 
   const onSaveVaultItem = async () => {
@@ -194,9 +192,11 @@ const NewItemForm = () => {
     setPassword("");
     setUserName("");
     setCollectionName("");
+    setCollectionID("");
   };
 
   const networkErrorHandler = (error) => {
+    console.log(error);
     if (error.response.status === 403) {
       alert("Please sign in again to continue");
       navigate("/login-signup");

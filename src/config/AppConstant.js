@@ -3,7 +3,7 @@ const CREATE_ACCOUNT_URL = "signup/";
 const LOGIN_ACCOUNT_URL = "login/";
 const LOGOUT_ACCOUNT_URL = "logout";
 const COLLECTIONS_URL = "vault_collections/";
-const ITEM_URL = "vault_items/"
+const ITEMS_URL = "vault_items/"
 const USER_KEY = "user_key/"
 
 
@@ -15,6 +15,6 @@ export {
     LOGIN_ACCOUNT_URL,
     LOGOUT_ACCOUNT_URL,
     COLLECTIONS_URL,
-    ITEM_URL,
+    ITEMS_URL,
     USER_KEY
 }
