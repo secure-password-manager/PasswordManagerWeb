@@ -47,7 +47,7 @@ const PasswordGeneratorField = (props) => {
         error={passwordError.status}
         helperText={passwordError.message}
         type={showPassword ? "text" : "password"}
-        onChange={(event) => setPasswordCb(event.target.value)}
+        onChange={(event) => setPassword(event.target.value)}
         InputProps={{
           endAdornment: (
             <>
@@ -74,6 +74,7 @@ const PasswordGeneratorField = (props) => {
       <SnackBar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         duration={2000}
+        message={"Password Copied"}
         open={openSnackbar}
         setOpenSnackbar={setOpenSnackbar}
       />
