@@ -197,7 +197,7 @@ function LoginForm() {
           xs: "75%",
           sm: "60%",
           md: "45%",
-          xl: "25%",
+          l: "30%",
         },
         border: "1px solid gray",
       }}
