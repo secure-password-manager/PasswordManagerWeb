@@ -86,8 +86,13 @@ async function postVaultItem(itemString, symmetricKey, collectionUUID) {
   });
 }
 
+async function deleteVaultItem(uuid) {
+  return axios.delete(`${ITEMS_URL}${uuid}/`);
+}
+
 export {
   createAccount,
+  deleteVaultItem,
   getUserData,
   loginAccount,
   postCollections,

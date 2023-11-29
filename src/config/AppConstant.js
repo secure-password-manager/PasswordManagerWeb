@@ -1,9 +1,9 @@
 const API_BASE_URL = import.meta.env.DEV ? "http://localhost:8000/" : "https://api.key-fortress.com/";
 const CREATE_ACCOUNT_URL = "signup/";
+const ITEMS_URL = "vault_items/"
 const LOGIN_ACCOUNT_URL = "login/";
 const LOGOUT_ACCOUNT_URL = "logout";
 const COLLECTIONS_URL = "vault_collections/";
-const ITEMS_URL = "vault_items/"
 const USER_KEY = "user_key/"
 
 

@@ -3,7 +3,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
 export default function SnackBar(props) {
-  const { anchorOrigin, duration, open, setOpenSnackbar } = props;
+  const { anchorOrigin, duration, message, open, setOpenSnackbar } = props;
 
   const closeSnackBar = (event, reason) => {
     if (reason === "clickaway") {
@@ -31,7 +31,7 @@ export default function SnackBar(props) {
         anchorOrigin={anchorOrigin}
         autoHideDuration={duration}
         onClose={closeSnackBar}
-        message="Password Copied"
+        message={message}
         action={action}
       />
     </div>
