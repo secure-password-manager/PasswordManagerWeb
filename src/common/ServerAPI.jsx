@@ -10,11 +10,10 @@ import {
   encryptVaultItem,
 } from "../lib/encryption";
 import {
-  CREATE_ACCOUNT_URL,
-  LOGIN_ACCOUNT_URL,
   COLLECTIONS_URL,
+  CREATE_ACCOUNT_URL,
   ITEMS_URL,
-  USER_KEY,
+  LOGIN_ACCOUNT_URL,
 } from "../config/AppConstant";
 
 async function createAccount(email, password) {
@@ -37,51 +36,38 @@ async function loginAccount(email, password) {
   const masterKey = await deriveMasterKey(email, password);
   const passwordHash = await deriveMasterPasswordHash(password, masterKey);
 
-  const response = await axios.post(
-    LOGIN_ACCOUNT_URL,
-    {
-      email: email,
-      password: passwordHash,
-    },
-  );
+  const response = await axios.post(LOGIN_ACCOUNT_URL, {
+    email: email,
+    password: passwordHash,
+  });
 
   const encryptedSymmetricKey = response.data.encrypted_symmetric_key;
   return await decryptSymmetricKey(encryptedSymmetricKey, masterKey);
 }
 
 async function getUserData(symmetricKey) {
-  const collectionResponse = await axios.get(
-    COLLECTIONS_URL
-  );
-  let itemResponse = await axios.get(
-    ITEMS_URL
-  );
+  const collectionResponse = await axios.get(COLLECTIONS_URL);
+  let itemResponse = await axios.get(ITEMS_URL);
 
   const collections = collectionResponse.data;
   let items = itemResponse.data;
 
   items = await decryptItems(items, base64ToArrayBuffer(symmetricKey));
 
-  return {collections, items};
+  return { collections, items };
 }
 
 async function decryptItems(items, symmetricKey) {
-  for(let key in items) {
-    let vaultItem = await decryptVaultItem(items[key]["encrypted_data"], symmetricKey);
+  for (let key in items) {
+    let vaultItem = await decryptVaultItem(
+      items[key]["encrypted_data"],
+      symmetricKey
+    );
     items[key]["data"] = JSON.parse(vaultItem);
-    delete items[key]["encrypted_data"]
+    delete items[key]["encrypted_data"];
   }
 
   return items;
-
-}
-
-async function getUserKey() {
-  return axios.get(USER_KEY);
-}
-
-async function getCollections() {
-  return axios.get(COLLECTIONS_URL);
 }
 
 async function postCollections(collectionName) {
@@ -90,18 +76,19 @@ async function postCollections(collectionName) {
   });
 }
 
-async function postVaultItem(item, key, collectionUUID) {
+async function postVaultItem(itemString, symmetricKey, collectionUUID) {
   return axios.post(ITEMS_URL, {
-    encrypted_data: await encryptVaultItem(item, key),
+    encrypted_data: await encryptVaultItem(
+      itemString,
+      base64ToArrayBuffer(symmetricKey)
+    ),
     vault_collection: collectionUUID,
   });
 }
 
 export {
   createAccount,
-  getCollections,
   getUserData,
-  getUserKey,
   loginAccount,
   postCollections,
   postVaultItem,

@@ -11,7 +11,7 @@ import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import NewItemForm from "./NewItemForm";
 import VaultItemPopOut from "./VaultItemPopOut";
 
-export default function VaultItemTiles({ items }) {
+export default function VaultItemTiles({ items, collections }) {
   const itemsArray = Object.keys(items).map((item) => items[item].data);
   const [open, openValue] = useState(false);
   const [vaultItem, setValue] = useState(0);
@@ -35,7 +35,7 @@ export default function VaultItemTiles({ items }) {
           maxWidth={500}
           ml={2}
         >
-          <NewItemForm />
+          <NewItemForm collections={collections} />
         </Box>
         <List>
           {itemsArray.map((vaultItem) => (

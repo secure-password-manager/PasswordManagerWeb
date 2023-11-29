@@ -113,7 +113,6 @@ function LoginForm() {
     try {
       const symmetricKey = await loginAccount(email, password);
       setSymmetricKey(arrayBufferToBase64(symmetricKey));
-      alert("Logging into account");
       navigate("/dashboard");
     } catch (error) {
       setPasswordError(loginError);

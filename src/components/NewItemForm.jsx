@@ -13,15 +13,10 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import {
-  getCollections,
-  postCollections,
-  getUserKey,
-  postVaultItem,
-} from "../common/ServerAPI";
+import { postCollections, postVaultItem } from "../common/ServerAPI";
 import { useNavigate } from "react-router-dom";
+import { useGlobalStore } from "../common/useGlobalStore";
 
-// TODO: extract these out to common file
 const errorMessages = {
   empty: "",
   required: "Missing required fields",
@@ -38,11 +33,11 @@ const requiredFieldsError = {
 };
 
 // Receive collections for vault items as props
-const NewItemForm = () => {
+const NewItemForm = ({ collections }) => {
   // Menu related Items
+  const symmetricKey = useGlobalStore((state) => state.symmetricKey);
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
-
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -69,27 +64,6 @@ const NewItemForm = () => {
   // Collections Form
   const [collectionName, setCollectionName] = useState("");
   const [collectionError, setCollectionError] = useState(clearError);
-  const onSaveCollection = async () => {
-    if (collectionName === "") {
-      setCollectionError(requiredFieldsError);
-      return;
-    } else {
-      setCollectionError(clearError);
-    }
-
-    try {
-      let response = await postCollections(collectionName);
-      setCollectionName("");
-      handleDialogClose(setCollectionsDialogOpen);
-      setCollectionArray((currentCollections) => [
-        ...currentCollections,
-        response.data,
-      ]);
-    } catch (error) {
-      networkErrorHandler(error);
-      return;
-    }
-  };
 
   // Vault Items
   // 'name': Google
@@ -106,39 +80,27 @@ const NewItemForm = () => {
   const [usernameError, setUserNameError] = useState(clearError);
 
   const [collectionID, setCollectionID] = useState("");
-  const [collectionArray, setCollectionArray] = useState([]);
   const [defaultCollectionsID, setDefaultCollectionID] = useState("");
-
-  const [symmetricKey, setSymmetricKey] = useState("");
 
   const handleCollectionChange = (event) => {
     setCollectionID(event.target.value);
   };
 
-  // Gets vault collection and keys
-  const getUserDetails = async () => {
-    try {
-      let collectionResponse = await getCollections(getCollections);
-      let keyResponse = await getUserKey();
-      setCollectionArray(collectionResponse.data);
-
-      // We need to decrypt this in the future for vault items
-      let encryptedSymmetricKey = keyResponse.data.encrypted_symmetric_key;
-      for (let i = 0; i < collectionResponse.data.length; i++) {
-        let collection = collectionResponse.data[i];
-        if (collection.name == "Default") {
+  const getDefaultCollections = () => {
+    if (collections && collections.length) {
+      for (let i = 0; i < collections.length; i++) {
+        let collection = collections[i];
+        if (collection.name === "Default") {
           setDefaultCollectionID(collection.uuid);
           setCollectionID(collection.uuid);
         }
       }
-    } catch (error) {
-      networkErrorHandler(error);
     }
   };
 
   useEffect(() => {
-    getUserDetails();
-  }, []);
+    getDefaultCollections();
+  }, [collections]);
 
   const onSaveVaultItem = async () => {
     let errorStatus = false;
@@ -157,17 +119,35 @@ const NewItemForm = () => {
       username: username,
       password: password,
     };
+    let vaultItemString = JSON.stringify(vaultItemObject);
+    try {
+      let response = await postVaultItem(
+        vaultItemString,
+        symmetricKey,
+        collectionID
+      );
+      handleDialogClose(setCollectionsDialogOpen);
+    } catch (error) {
+      networkErrorHandler(error);
+    }
+  };
 
-    console.log(vaultItemObject);
-    // try {
-    //   let response = await postVaultItem(
-    //     vaultItemObject,
-    //     symmetricKey,
-    //     collectionID
-    //   );
-    // } catch (error) {
-    //   networkErrorHandler(error);
-    // }
+  // TODO: Extract out as a callback, for now save and close module
+  const onSaveCollection = async () => {
+    if (collectionName === "") {
+      setCollectionError(requiredFieldsError);
+      return;
+    } else {
+      setCollectionError(clearError);
+    }
+
+    try {
+      let response = await postCollections(collectionName);
+      handleDialogClose(setCollectionsDialogOpen);
+    } catch (error) {
+      networkErrorHandler(error);
+      return;
+    }
   };
 
   const isNullCheck = (field, errorHandler) => {
@@ -192,10 +172,15 @@ const NewItemForm = () => {
     setPassword("");
     setUserName("");
     setCollectionName("");
-    setCollectionID("");
+    setCollectionID(defaultCollectionsID);
   };
 
   const networkErrorHandler = (error) => {
+    if (!error || !error.response || !error.response.status) {
+      console.log(error);
+      return;
+    }
+
     if (error.response.status === 403) {
       alert("Please sign in again to continue");
       navigate("/login-signup");
@@ -321,7 +306,7 @@ const NewItemForm = () => {
                     value={collectionID}
                     onChange={handleCollectionChange}
                   >
-                    {collectionArray.map((collection) => {
+                    {collections.map((collection) => {
                       return (
                         <MenuItem value={collection.uuid} key={collection.uuid}>
                           {collection.name}
