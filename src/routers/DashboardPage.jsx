@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import NavBar from "../components/NavBar";
-import SideBar from "../components/SideBar";
 import { Box, Typography } from "@mui/material";
-import VaultItemTiles from "../components/VaultItemTiles";
-
-import { getUserData } from "../common/ServerAPI";
-import { useGlobalStore } from "../common/useGlobalStore";
+import NavBar from "@/components/NavBar";
+import SideBar from "@/components/SideBar";
+import VaultItemTiles from "@/components/VaultItemTiles";
+import NewItemForm from "@/components/NewItemForm";
+import { getUserData } from "@/common/ServerAPI";
+import { useGlobalStore } from "@/common/useGlobalStore";
 
 function DashboardPage() {
   const [collections, setCollections] = useState([]);
@@ -35,14 +34,16 @@ function DashboardPage() {
     <>
       <NavBar />
       <SideBar collections={collections} />
-      <Typography
-        sx={{
-          paddingLeft: 35,
-          fontSize: "h4.fontSize",
-        }}
-      >
-        Dashboard
-      </Typography>
+      <Box display="flex" justifyContent="space-between" maxWidth={750} ml={2}>
+        <Typography
+          sx={{
+            paddingLeft: 35,
+            fontSize: "h4.fontSize",
+          }}>
+          Dashboard
+        </Typography>
+        <NewItemForm collections={collections} />
+      </Box>
       <Box sx={{ paddingLeft: 35 }}>
         <VaultItemTiles items={items} collections={collections} />
       </Box>
