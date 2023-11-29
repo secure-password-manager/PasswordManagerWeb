@@ -193,9 +193,13 @@ function LoginForm() {
   return (
     <Container
       sx={{
-        width: "25%",
+        width: {
+          xs: "75%",
+          sm: "60%",
+          md: "45%",
+          xl: "25%",
+        },
         border: "1px solid gray",
-        minWidth: "200px",
       }}
     >
       <Tabs

@@ -5,8 +5,6 @@ import HomePage from "./routers/Home.jsx";
 import ErrorPage from "./routers/ErrorPage.jsx";
 import LoginSignupPage from "./routers/LoginSignupPage.jsx";
 import DashboardPage from "./routers/DashboardPage.jsx";
-import CollectionsPage from "./routers/CollectionsPage.jsx";
-import VaultItemPage from "./routers/VaultItemPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,15 +19,6 @@ const router = createBrowserRouter([
   {
     path: "dashboard/",
     element: <DashboardPage />,
-    children: [
-      {
-        path: "collections/:collectionsId",
-        element: <CollectionsPage />,
-        children: [
-          { path: "vaultItemId/:vaultItemId", element: <VaultItemPage /> },
-        ],
-      },
-    ],
   },
 ]);
 
