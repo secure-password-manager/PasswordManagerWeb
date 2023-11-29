@@ -1,19 +1,37 @@
 import React, { useState } from "react";
 import {
+  ContentCopy,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
+import {
+  Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
+  IconButton,
+  InputAdornment,
   Stack,
   TextField,
 } from "@mui/material";
 
-export default function VaultItemPopOut({ vaultItem, open, closePopup }) {
-  const [showPassword, setShowPassword] = useState(false);
+import SnackBar from "./SnackBar";
 
+export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleTogglePassword = () => setShowPassword(!showPassword);
+
+  const handleCopyPassword = () => {
+    if (vaultItem.password) {
+      navigator.clipboard.writeText(vaultItem.password);
+      setOpenSnackbar(true);
+    }
+  };
   return (
-    <Dialog open={open} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={() => closePopOut()} fullWidth maxWidth="sm">
       <DialogTitle>Account Details</DialogTitle>
       <DialogContent>
         <Stack spacing={2} margin={2}>
@@ -21,33 +39,57 @@ export default function VaultItemPopOut({ vaultItem, open, closePopup }) {
             defaultValue={vaultItem.name}
             variant="outlined"
             label="Account Name"
-            inputProps={{ readOnly: true }}
-          ></TextField>
+            inputProps={{ readOnly: true }}></TextField>
           <TextField
             defaultValue={vaultItem.url}
             variant="outlined"
             label="URL"
-            inputProps={{ readOnly: true }}
-          ></TextField>
+            inputProps={{ readOnly: true }}></TextField>
           <TextField
             defaultValue={vaultItem.username}
             variant="outlined"
             label="Username"
-            inputProps={{ readOnly: true }}
-          ></TextField>
+            inputProps={{ readOnly: true }}></TextField>
           <TextField
             defaultValue={vaultItem.password}
             variant="outlined"
             label="Password"
             type={showPassword ? "text" : "password"}
-            inputProps={{ readOnly: true }}
-            onClick={() => setShowPassword(!showPassword)}
-          ></TextField>
+            InputProps={{
+              readOnly: true,
+              endAdornment: (
+                <>
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleTogglePassword}
+                      onMouseDown={handleTogglePassword}>
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password copy"
+                      onClick={handleCopyPassword}
+                      onMouseDown={handleCopyPassword}>
+                      <ContentCopy />
+                    </IconButton>
+                  </InputAdornment>
+                </>
+              ),
+            }}></TextField>
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => closePopup()}>Close</Button>
+        <Button onClick={() => closePopOut()}>Close</Button>
       </DialogActions>
+      <SnackBar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        duration={2000}
+        message={"Password Copied"}
+        open={openSnackbar}
+        setOpenSnackbar={setOpenSnackbar}
+      />
     </Dialog>
   );
 }
