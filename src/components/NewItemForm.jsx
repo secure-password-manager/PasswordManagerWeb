@@ -13,9 +13,10 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { postCollections, postVaultItem } from "../common/ServerAPI";
+import { postCollections, postVaultItem } from "@/common/ServerAPI";
 import { useNavigate } from "react-router-dom";
-import { useGlobalStore } from "../common/useGlobalStore";
+import { useGlobalStore } from "@/common/useGlobalStore";
+import PasswordGeneratorField from "./PasswordGeneratorField";
 
 const errorMessages = {
   empty: "",
@@ -286,13 +287,11 @@ const NewItemForm = ({ collections }) => {
               </Grid>
               <Grid item xs={6}>
                 {" "}
-                <TextField
-                  label="Password"
-                  value={password}
-                  error={passwordError.status}
-                  helperText={passwordError.message}
-                  onChange={(event) => setPassword(event.target.value)}
-                />
+                <PasswordGeneratorField
+                  password={password}
+                  passwordError={passwordError}
+                  handlePasswordChange={newPassword => setPassword(newPassword)
+                  }></PasswordGeneratorField>
               </Grid>
               <Grid item xs={12} marginTop={1} sx={{ minWidth: "375px" }}>
                 <FormControl sx={{ minWidth: "375px" }}>

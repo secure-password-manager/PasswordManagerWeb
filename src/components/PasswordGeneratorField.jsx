@@ -15,7 +15,7 @@ const PasswordGeneratorField = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const { password, passwordError, setPassword } = props;
+  const { handlePasswordChange, password, passwordError } = props;
 
   const pwg = new PasswordGenerator({
     includeUpper: true,
@@ -31,13 +31,12 @@ const PasswordGeneratorField = (props) => {
       setOpenSnackbar(true);
     }
   }
-  const generatePassword = () => {
-    setPassword(pwg.getRandomPassword());
-  };
 
   return (
     <>
-      <IconButton aria-label="toggle password copy" onClick={generatePassword}>
+      <IconButton
+        aria-label="toggle password copy"
+        onClick={() => handlePasswordChange(pwg.getRandomPassword())}>
         <LockReset />
       </IconButton>
       <TextField
@@ -47,7 +46,7 @@ const PasswordGeneratorField = (props) => {
         error={passwordError.status}
         helperText={passwordError.message}
         type={showPassword ? "text" : "password"}
-        onChange={(event) => setPassword(event.target.value)}
+        onChange={(event) => handlePasswordChange(event.target.value)}
         InputProps={{
           endAdornment: (
             <>
