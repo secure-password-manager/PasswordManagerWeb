@@ -6,7 +6,6 @@ function setItem(itemData, setItems) {
 }
 
 function deleteItem(itemData, setItems) {
-  console.log(itemData)
   setItems(items => {
     const {[itemData.uuid]: _, ...rest} = items;
     return rest;
