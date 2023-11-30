@@ -34,7 +34,7 @@ function DashboardPage() {
     <>
       <NavBar />
       <SideBar collections={collections} />
-      <Box display="flex" justifyContent="space-between" maxWidth={750} ml={2}>
+      <Box sx={{display: "flex", justifyContent: "space-between"}} maxWidth={750} ml={2}>
         <Typography
           sx={{
             paddingLeft: 35,
