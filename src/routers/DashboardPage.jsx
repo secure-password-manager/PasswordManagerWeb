@@ -44,7 +44,7 @@ function DashboardPage() {
         Dashboard
       </Typography>
       <Box sx={{ paddingLeft: 35 }}>
-        <VaultItemTiles items={items} />
+        <VaultItemTiles items={items} collections={collections} />
       </Box>
     </>
   );
