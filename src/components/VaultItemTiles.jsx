@@ -35,7 +35,6 @@ export default function VaultItemTiles({ items }) {
 
   const networkErrorHandler = (error) => {
     if (error.response.status === 403) {
-      // alert("Please sign in again to continue");
       setSnackBarMessage("Please sign in again to continue");
       setOpenSnackbar(true);
       navigate("/login-signup");
