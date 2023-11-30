@@ -21,26 +21,31 @@ function DashboardPage() {
         setItems(data.items);
       })
       .catch((error) => {
-        if(error.response && error.response.status) {
-          if(error.response.status === 403) {
-            navigate('/login-signup');
+        if (error.response && error.response.status) {
+          if (error.response.status === 403) {
+            navigate("/login-signup");
           }
         }
-      }
-    );
+      });
   }, [symmetricKey]);
 
   return (
     <>
       <NavBar />
       <SideBar collections={collections} />
-      <Box sx={{display: "flex", justifyContent: "space-between"}} maxWidth={750} ml={2}>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between" }}
+        maxWidth={750}
+        ml={2}
+      >
         <Typography
           sx={{
+            paddingTop: 10,
             paddingLeft: 35,
-            fontSize: "h4.fontSize",
-          }}>
-          Dashboard
+            fontSize: "h1.fontSize",
+          }}
+        >
+          DASHBOARD
         </Typography>
         <NewItemForm collections={collections} />
       </Box>

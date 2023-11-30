@@ -25,12 +25,6 @@ export default function ({ collections }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <NavBar />
-      </AppBar>
       <Drawer
         variant="permanent"
         sx={{
@@ -43,22 +37,18 @@ export default function ({ collections }) {
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: "auto", paddingLeft: 2 }}>
+        <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 5 }}>
+          <Typography sx={{ fontSize: "h4.fontSize" }}>COLLECTIONS</Typography>
           <List>
-            <Typography sx={{ fontSize: "h5.fontSize" }}>
-              Collections
-            </Typography>
-            <div>
-              {collections.map((collections) => {
-                return (
-                  <ListItem key={collections.name}>
-                    <ListItemButton onClick={handleOnClick}>
-                      <ListItemText primary={collections.name} />
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-            </div>
+            {collections.map((collections) => {
+              return (
+                <ListItem key={collections.name}>
+                  <ListItemButton onClick={handleOnClick}>
+                    <ListItemText primary={collections.name} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
           </List>
           <Divider />
         </Box>
