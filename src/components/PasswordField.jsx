@@ -45,7 +45,7 @@ const PasswordGeneratorField = (props) => {
   }
 
   const onCompromisedPasswordCheck = (password) => {
-    if (password.length > 0) {
+    if (password.length) {
       checkIsPasswordCompromised(password).then((score) => {
         if(score === "-1") {
           showPasswordAlert("Compromised password checking is not available.", "warning");
