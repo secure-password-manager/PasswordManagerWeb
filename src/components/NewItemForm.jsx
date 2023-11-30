@@ -8,8 +8,8 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  Grid,
   Select,
+  Stack,
   InputLabel,
   FormControl,
 } from "@mui/material";
@@ -242,80 +242,64 @@ const NewItemForm = ({ collections }) => {
           Vault Items
         </MenuItem>
         <Dialog
+          fullWidth
+          maxWidth="sm"
           open={vaultDialogOpen}
           onClose={() => handleDialogClose(setVaultDialogOpen)}
           onKeyDown={(event) => {
             if (event.key === "Tab") {
               event.stopPropagation();
             }
-          }}
-        >
+          }}>
           <DialogTitle>Add a new vault item</DialogTitle>
           <DialogContent>
-            <Grid
-              container
-              justifyContent="space-between"
-              spacing={1}
-              padding={1}
-            >
-              <Grid item xs={6}>
-                <TextField
-                  label="Name"
-                  value={itemName}
-                  error={itemNameError.status}
-                  helperText={itemNameError.message}
-                  onChange={(event) => setItemName(event.target.value)}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  label="URL"
-                  value={endpoint}
-                  error={endpointError.status}
-                  helperText={endpointError.message}
-                  onChange={(event) => setEndpoint(event.target.value)}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  label="Username"
-                  value={username}
-                  error={usernameError.status}
-                  helperText={usernameError.message}
-                  onChange={(event) => setUserName(event.target.value)}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                {" "}
-                <PasswordGeneratorField
-                  password={password}
-                  passwordError={passwordError}
-                  handlePasswordChange={newPassword => setPassword(newPassword)
-                  }></PasswordGeneratorField>
-              </Grid>
-              <Grid item xs={12} marginTop={1} sx={{ minWidth: "375px" }}>
-                <FormControl sx={{ minWidth: "375px" }}>
-                  <InputLabel id="CollectionSelctor">
-                    Select a collection
-                  </InputLabel>
-                  <Select
-                    labelId="CollectionSelctor"
-                    label="CollectionSelctor"
-                    defaultValue={defaultCollectionsID}
-                    value={collectionID}
-                    onChange={handleCollectionChange}
-                  >
-                    {collections.map((collection) => {
-                      return (
-                        <MenuItem value={collection.uuid} key={collection.uuid}>
-                          {collection.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
+            <Stack spacing={2} margin={2}>
+              <TextField
+                label="Name"
+                value={itemName}
+                error={itemNameError.status}
+                helperText={itemNameError.message}
+                onChange={(event) => setItemName(event.target.value)}
+              />
+              <TextField
+                label="URL"
+                value={endpoint}
+                error={endpointError.status}
+                helperText={endpointError.message}
+                onChange={(event) => setEndpoint(event.target.value)}
+              />
+              <TextField
+                label="Username"
+                value={username}
+                error={usernameError.status}
+                helperText={usernameError.message}
+                onChange={(event) => setUserName(event.target.value)}
+              />{" "}
+              <PasswordGeneratorField
+                password={password}
+                passwordError={passwordError}
+                handlePasswordChange={(newPassword) => setPassword(newPassword)}>
+              </PasswordGeneratorField>
+              <FormControl>
+                <InputLabel id="CollectionSelctor">
+                  Select a collection
+                </InputLabel>
+                <Select
+                  labelId="CollectionSelctor"
+                  label="CollectionSelctor"
+                  defaultValue={defaultCollectionsID}
+                  value={collectionID}
+                  onChange={handleCollectionChange}>
+                  {collections.map((collection) => {
+                    return (
+                      <MenuItem value={collection.uuid} key={collection.uuid}>
+                        {collection.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Stack>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => handleDialogClose(setVaultDialogOpen)}>
