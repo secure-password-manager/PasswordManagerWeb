@@ -47,7 +47,9 @@ function DashboardPage() {
         >
           DASHBOARD
         </Typography>
-        <NewItemForm collections={collections} />
+        <Box sx={{ paddingTop: 15 }}>
+          <NewItemForm collections={collections} />
+        </Box>
       </Box>
       <Box sx={{ paddingLeft: 35 }}>
         <VaultItemTiles items={items} collections={collections} />
