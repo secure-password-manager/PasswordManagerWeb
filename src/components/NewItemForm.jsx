@@ -16,7 +16,7 @@ import {
 import { postCollections, postVaultItem } from "@/common/ServerAPI";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "@/common/useGlobalStore";
-import PasswordGeneratorField from "./PasswordGeneratorField";
+import PasswordField from "./PasswordField";
 
 const errorMessages = {
   empty: "",
@@ -275,11 +275,12 @@ const NewItemForm = ({ collections }) => {
                 helperText={usernameError.message}
                 onChange={(event) => setUserName(event.target.value)}
               />{" "}
-              <PasswordGeneratorField
+              <PasswordField
                 password={password}
                 passwordError={passwordError}
-                handlePasswordChange={(newPassword) => setPassword(newPassword)}>
-              </PasswordGeneratorField>
+                handlePasswordChange={(newPassword) =>
+                  setPassword(newPassword)
+                }></PasswordField>
               <FormControl>
                 <InputLabel id="CollectionSelctor">
                   Select a collection
