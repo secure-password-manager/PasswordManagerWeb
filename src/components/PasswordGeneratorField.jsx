@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { InputAdornment, IconButton, TextField } from "@mui/material";
+import { Box, InputAdornment, IconButton, TextField } from "@mui/material";
 import {
   ContentCopy,
   LockReset,
@@ -33,13 +33,17 @@ const PasswordGeneratorField = (props) => {
   }
 
   return (
-    <>
-      <IconButton
-        aria-label="toggle password copy"
-        onClick={() => handlePasswordChange(pwg.getRandomPassword())}>
-        <LockReset />
-      </IconButton>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Box sx={{ alignSelf: "flex-end" }}>
+        <IconButton
+          aria-label="toggle password copy"
+          onClick={() => handlePasswordChange(pwg.getRandomPassword())}>
+          <LockReset />
+        </IconButton>
+      </Box>
+
       <TextField
+        sx={{ flexGrow: 1 }}
         label="Password"
         variant="outlined"
         value={password}
@@ -77,7 +81,7 @@ const PasswordGeneratorField = (props) => {
         open={openSnackbar}
         setOpenSnackbar={setOpenSnackbar}
       />
-    </>
+    </Box>
   );
 };
 export default PasswordGeneratorField;
