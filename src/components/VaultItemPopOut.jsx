@@ -18,11 +18,16 @@ import {
 
 import AlertSnackbar from "./AlertSnackbar";
 
-export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+export default function VaultItemPopOut(props) {
+  const {
+    handleClosePopOut,
+    handleTogglePassword,
+    open,
+    showPassword,
+    vaultItem,
+  } = props;
 
-  const handleTogglePassword = () => setShowPassword(!showPassword);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleCopyPassword = () => {
     if (vaultItem.password) {
@@ -30,8 +35,13 @@ export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
       setOpenSnackbar(true);
     }
   };
+
   return (
-    <Dialog open={open} onClose={() => closePopOut()} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={handleClosePopOut}
+      fullWidth
+      maxWidth="sm">
       <DialogTitle>Account Details</DialogTitle>
       <DialogContent>
         <Stack spacing={2} margin={2}>
@@ -81,7 +91,7 @@ export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => closePopOut()}>Close</Button>
+        <Button onClick={handleClosePopOut}>Close</Button>
       </DialogActions>
       <AlertSnackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
