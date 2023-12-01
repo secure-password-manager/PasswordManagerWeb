@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, InputAdornment, IconButton, TextField } from "@mui/material";
 import {
   CheckCircleOutline,
@@ -8,15 +8,14 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import SnackBar from './SnackBar';
-import PasswordAlert from './PasswordAlert';
+import AlertSnackbar from './AlertSnackbar.jsx';
 import PasswordGenerator from "../lib/passwordGenerator";
 import { checkIsPasswordCompromised } from "@/common/Compromised.jsx";
 
 
 const PasswordGeneratorField = (props) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openCopyAlert, setOpenCopyAlert] = useState(false);
   const [openPasswordAlert, setOpenPasswordAlert] = useState(false);
   const [passwordAlertMessage, setPasswordAlertMessage] = useState("");
   const [passwordAlertSeverity, setPasswordAlertSeverity] = useState("success");
@@ -34,7 +33,7 @@ const PasswordGeneratorField = (props) => {
   const copyPassword = () => {
     if (password) {
       navigator.clipboard.writeText(password);
-      setOpenSnackbar(true);
+      setOpenCopyAlert(true);
     }
   }
 
@@ -106,14 +105,15 @@ const PasswordGeneratorField = (props) => {
           ),
         }}
       />
-      <SnackBar
+      <AlertSnackbar
+        open={openCopyAlert}
+        setOpen={setOpenCopyAlert}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         duration={2000}
         message={"Password Copied"}
-        open={openSnackbar}
-        setOpenSnackbar={setOpenSnackbar}
+        severity={"success"}
       />
-      <PasswordAlert
+      <AlertSnackbar
         open={openPasswordAlert}
         setOpen={setOpenPasswordAlert}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
