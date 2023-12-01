@@ -13,10 +13,16 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { postCollections, postVaultItem } from "@/common/ServerAPI";
+import {
+  postCollections,
+  postVaultItem,
+  decryptItems,
+} from "@/common/ServerAPI";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "@/common/useGlobalStore";
 import PasswordField from "./PasswordField";
+import { base64ToArrayBuffer } from "../lib/encryption";
+import { createCollection, setItem } from "@/common/stateMutation";
 
 const errorMessages = {
   empty: "",
@@ -34,7 +40,7 @@ const requiredFieldsError = {
 };
 
 // Receive collections for vault items as props
-const NewItemForm = ({ collections }) => {
+const NewItemForm = ({ collections, setCollections, setItems }) => {
   // Menu related Items
   const symmetricKey = useGlobalStore((state) => state.symmetricKey);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -127,6 +133,12 @@ const NewItemForm = ({ collections }) => {
         symmetricKey,
         collectionID
       );
+
+      var vaultItemDecrypted = await decryptItems(
+        [response.data],
+        base64ToArrayBuffer(symmetricKey)
+      );
+      setItem(vaultItemDecrypted[0], setItems);
       handleDialogClose(setCollectionsDialogOpen);
     } catch (error) {
       networkErrorHandler(error);
@@ -144,6 +156,7 @@ const NewItemForm = ({ collections }) => {
 
     try {
       let response = await postCollections(collectionName);
+      createCollection(response.data, setCollections);
       handleDialogClose(setCollectionsDialogOpen);
     } catch (error) {
       networkErrorHandler(error);
@@ -250,7 +263,8 @@ const NewItemForm = ({ collections }) => {
             if (event.key === "Tab") {
               event.stopPropagation();
             }
-          }}>
+          }}
+        >
           <DialogTitle>Add a new vault item</DialogTitle>
           <DialogContent>
             <Stack spacing={2} margin={2}>
@@ -278,9 +292,8 @@ const NewItemForm = ({ collections }) => {
               <PasswordField
                 password={password}
                 passwordError={passwordError}
-                handlePasswordChange={(newPassword) =>
-                  setPassword(newPassword)
-                }></PasswordField>
+                handlePasswordChange={(newPassword) => setPassword(newPassword)}
+              ></PasswordField>
               <FormControl>
                 <InputLabel id="CollectionSelctor">
                   Select a collection
@@ -290,7 +303,8 @@ const NewItemForm = ({ collections }) => {
                   label="CollectionSelctor"
                   defaultValue={defaultCollectionsID}
                   value={collectionID}
-                  onChange={handleCollectionChange}>
+                  onChange={handleCollectionChange}
+                >
                   {collections.map((collection) => {
                     return (
                       <MenuItem value={collection.uuid} key={collection.uuid}>

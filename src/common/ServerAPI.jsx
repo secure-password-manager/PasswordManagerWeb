@@ -92,6 +92,7 @@ async function deleteVaultItem(uuid) {
 
 export {
   createAccount,
+  decryptItems,
   deleteVaultItem,
   getUserData,
   loginAccount,
