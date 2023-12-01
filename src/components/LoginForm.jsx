@@ -192,9 +192,13 @@ function LoginForm() {
   return (
     <Container
       sx={{
-        width: "25%",
+        width: {
+          xs: "75%",
+          sm: "60%",
+          md: "45%",
+          l: "30%",
+        },
         border: "1px solid gray",
-        minWidth: "200px",
       }}
     >
       <Tabs
@@ -281,7 +285,7 @@ function LoginForm() {
               <Button
                 variant="contained"
                 type="submit"
-                sx={{ width: "25%", float: "right" }}
+                sx={{ width: "25%", float: "right", whiteSpace: "nowrap" }}
               >
                 Sign Up
               </Button>
