@@ -286,7 +286,7 @@ function LoginForm() {
               <Button
                 variant="contained"
                 type="submit"
-                sx={{ width: "25%", float: "right" }}
+                sx={{ width: "25%", float: "right", whiteSpace: "nowrap" }}
               >
                 Sign Up
               </Button>
