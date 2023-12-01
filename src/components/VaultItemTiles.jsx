@@ -21,6 +21,7 @@ export default function VaultItemTiles(props) {
   const [open, setOpen] = useState(false);
   const [vaultItem, setVaultItem] = useState({});
   const [loading, setLoading] = useState(itemsArray.map(() => false));
+  const [showPassword, setShowPassword] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackBarMessaage, setSnackBarMessage] = useState('');
   const navigate = useNavigate();
@@ -32,8 +33,10 @@ export default function VaultItemTiles(props) {
 
   const handleClosePopOut = () => {
     setOpen(false);
+    setShowPassword(false);
   };
 
+  const handleTogglePassword = () => setShowPassword(!showPassword);
 
   const networkErrorHandler = (error) => {
     if (error.response.status === 403) {
@@ -111,6 +114,8 @@ export default function VaultItemTiles(props) {
       <VaultItemPopOut
         handleClosePopOut={handleClosePopOut}
         open={open}
+        handleTogglePassword={handleTogglePassword}
+        showPassword={showPassword}
         vaultItem={vaultItem}
       />
       <SnackBar
