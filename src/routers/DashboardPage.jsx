@@ -21,13 +21,12 @@ function DashboardPage() {
         setItems(data.items);
       })
       .catch((error) => {
-        if(error.response && error.response.status) {
-          if(error.response.status === 403) {
-            navigate('/login-signup');
+        if (error.response && error.response.status) {
+          if (error.response.status === 403) {
+            navigate("/login-signup");
           }
         }
-      }
-    );
+      });
   }, [symmetricKey]);
 
   return (
@@ -37,18 +36,28 @@ function DashboardPage() {
       <Box
         sx={{ display: "flex", justifyContent: "space-between" }}
         maxWidth={750}
-        ml={2}>
+        ml={2}
+      >
         <Typography
           sx={{
             paddingLeft: 35,
             fontSize: "h4.fontSize",
-          }}>
+          }}
+        >
           Dashboard
         </Typography>
-        <NewItemForm collections={collections} />
+        <NewItemForm
+          collections={collections}
+          setCollections={setCollections}
+          setItems={setItems}
+        />
       </Box>
       <Box sx={{ paddingLeft: 35 }}>
-        <VaultItemTiles items={items} collections={collections} setItems={setItems} />
+        <VaultItemTiles
+          items={items}
+          collections={collections}
+          setItems={setItems}
+        />
       </Box>
     </>
   );
