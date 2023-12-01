@@ -17,7 +17,7 @@ import { Container } from "@mui/system";
 
 const drawerWidth = 240;
 
-export default function ({ collections }) {
+const SideBar = ({ collections }) => {
   const handleOnClick = (event) => {
     console.log(event);
   };
@@ -67,3 +67,5 @@ export default function ({ collections }) {
     </Box>
   );
 }
+
+export default SideBar;
