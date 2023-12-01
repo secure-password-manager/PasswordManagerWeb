@@ -16,7 +16,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import SnackBar from "./SnackBar";
+import AlertSnackbar from "./AlertSnackbar";
 
 export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -83,12 +83,13 @@ export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
       <DialogActions>
         <Button onClick={() => closePopOut()}>Close</Button>
       </DialogActions>
-      <SnackBar
+      <AlertSnackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         duration={2000}
         message={"Password Copied"}
         open={openSnackbar}
-        setOpenSnackbar={setOpenSnackbar}
+        setOpen={setOpenSnackbar}
+        severity={"success"}
       />
     </Dialog>
   );

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import VaultItemPopOut from "./VaultItemPopOut";
-import SnackBar from "./SnackBar";
+import AlertSnackbar from "./AlertSnackbar";
 import { deleteVaultItem } from "@/common/ServerAPI";
 
 export default function VaultItemTiles({ items }) {
@@ -21,6 +21,7 @@ export default function VaultItemTiles({ items }) {
   const [loading, setLoading] = useState(itemsArray.map(() => false));
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackBarMessaage, setSnackBarMessage] = useState('');
+  const [snackBarSeverity, setSnackBarSeverity] = useState('error');
   const navigate = useNavigate();
 
   const openPopOut = (event, vaultItem) => {
@@ -36,15 +37,16 @@ export default function VaultItemTiles({ items }) {
   const networkErrorHandler = (error) => {
     if (error.response.status === 403) {
       setSnackBarMessage("Please sign in again to continue");
+      setSnackBarSeverity("warning");
       setOpenSnackbar(true);
-      navigate("/login-signup");
+      setTimeout(() => {navigate("/login-signup")}, 2000);
       return;
     }
 
     if (error.response.status === 400 || error.response.status === 404) {
       setSnackBarMessage("Failed to access data, try again later");
+      setSnackBarSeverity("error");
       setOpenSnackbar(true);
-      return;
     }
   };
 
@@ -111,12 +113,13 @@ export default function VaultItemTiles({ items }) {
         open={open}
         closePopOut={closePopOut}
       />
-      <SnackBar
+      <AlertSnackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         duration={2000}
         message={snackBarMessaage}
         open={openSnackbar}
-        setOpenSnackbar={setOpenSnackbar}
+        setOpen={setOpenSnackbar}
+        severity={snackBarSeverity}
       />
     </>
   );
