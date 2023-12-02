@@ -40,14 +40,14 @@ function DashboardPage() {
       >
         <Typography
           sx={{
-            paddingTop: 10,
+            paddingTop: 8,
             paddingLeft: 35,
-            fontSize: "h1.fontSize",
+            fontSize: "h4.fontSize",
           }}
         >
           DASHBOARD
         </Typography>
-        <Box sx={{ paddingTop: 15 }}>
+        <Box sx={{ paddingTop: 8 }}>
           <NewItemForm collections={collections} />
         </Box>
       </Box>

@@ -1,10 +1,15 @@
 import React from "react";
 import logo2 from "../assets/logo2.png";
+import { CardMedia } from "@mui/material";
 
 function Logo() {
   return (
     <>
-      <img src={logo2} alt="Logo" />
+      <CardMedia
+        sx={{ objectFit: "scale-down", py: 1, height: 50 }}
+        image={logo2}
+        component="img"
+      />
     </>
   );
 }

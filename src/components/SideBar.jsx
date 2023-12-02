@@ -3,8 +3,6 @@ import {
   Box,
   Typography,
   Drawer,
-  AppBar,
-  CssBaseline,
   Toolbar,
   List,
   Divider,
@@ -12,8 +10,6 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import NavBar from "./NavBar";
-import { Container } from "@mui/system";
 
 const drawerWidth = 240;
 
@@ -24,7 +20,6 @@ export default function ({ collections }) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
       <Drawer
         variant="permanent"
         sx={{
@@ -38,7 +33,7 @@ export default function ({ collections }) {
       >
         <Toolbar />
         <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 5 }}>
-          <Typography sx={{ fontSize: "h4.fontSize" }}>COLLECTIONS</Typography>
+          <Typography sx={{ fontSize: "h5.fontSize" }}>COLLECTIONS</Typography>
           <List>
             {collections.map((collections) => {
               return (

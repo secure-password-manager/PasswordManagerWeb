@@ -44,14 +44,13 @@ const theme = createTheme({
           fontFamily: "mr-eaves-modern",
           fontWeight: 700,
           color: "#354F52",
-          textTransform: "uppercase",
         },
       },
     },
     MuiTab: {
       styleOverrides: {
         root: {
-          fontSize: 20,
+          fontSize: 18,
         },
       },
     },
