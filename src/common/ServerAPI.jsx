@@ -86,6 +86,10 @@ async function postVaultItem(itemString, symmetricKey, collectionUUID) {
   });
 }
 
+async function deleteCollections(uuid) {
+  return axios.delete(`${COLLECTIONS_URL}${uuid}/`);
+}
+
 async function deleteVaultItem(uuid) {
   return axios.delete(`${ITEMS_URL}${uuid}/`);
 }
@@ -98,4 +102,5 @@ export {
   loginAccount,
   postCollections,
   postVaultItem,
+  deleteCollections,
 };

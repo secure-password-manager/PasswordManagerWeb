@@ -32,7 +32,11 @@ function DashboardPage() {
   return (
     <>
       <NavBar />
-      <SideBar collections={collections} />
+      <SideBar
+        collections={collections}
+        setCollections={setCollections}
+        setItems={setItems}
+      />
       <Box
         sx={{ display: "flex", justifyContent: "space-between" }}
         maxWidth={750}

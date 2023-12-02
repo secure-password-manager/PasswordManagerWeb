@@ -13,13 +13,26 @@ import {
   ListItemText,
 } from "@mui/material";
 import NavBar from "./NavBar";
+import { deleteCollections } from "../common/ServerAPI";
+import { deleteCollection } from "../common/stateMutation";
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
+import IconButton from "@mui/material/IconButton";
 import { Container } from "@mui/system";
 
 const drawerWidth = 240;
 
-const SideBar = ({ collections }) => {
+const SideBar = ({ collections, setCollections, setItems }) => {
   const handleOnClick = (event) => {
     console.log(event);
+  };
+
+  const handleDeleteCollection = async (uuid) => {
+    try {
+      const response = await deleteCollections(uuid);
+      deleteCollection({ uuid: uuid }, setCollections, setItems);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -49,11 +62,20 @@ const SideBar = ({ collections }) => {
               Collections
             </Typography>
             <div>
-              {collections.map((collections) => {
+              {collections.map((collection) => {
                 return (
-                  <ListItem key={collections.name}>
+                  <ListItem
+                    key={collection.uuid}
+                    secondaryAction={
+                      <IconButton
+                        onClick={() => handleDeleteCollection(collection.uuid)}
+                      >
+                        <DeleteTwoToneIcon />
+                      </IconButton>
+                    }
+                  >
                     <ListItemButton onClick={handleOnClick}>
-                      <ListItemText primary={collections.name} />
+                      <ListItemText primary={collection.name} />
                     </ListItemButton>
                   </ListItem>
                 );
@@ -66,6 +88,6 @@ const SideBar = ({ collections }) => {
       <Toolbar />
     </Box>
   );
-}
+};
 
 export default SideBar;
