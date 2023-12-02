@@ -32,9 +32,13 @@ function DashboardPage() {
   return (
     <>
       <NavBar />
-      <SideBar collections={collections} />
+
       <Box
-        sx={{ display: "flex", justifyContent: "space-between" }}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingTop: 10,
+        }}
         maxWidth={750}
         ml={2}
       >
@@ -52,13 +56,7 @@ function DashboardPage() {
           setItems={setItems}
         />
       </Box>
-      <Box sx={{ paddingLeft: 35 }}>
-        <VaultItemTiles
-          items={items}
-          collections={collections}
-          setItems={setItems}
-        />
-      </Box>
+      <SideBar items={items} collections={collections} setItems={setItems} />
     </>
   );
 }
