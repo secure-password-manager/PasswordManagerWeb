@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  ContentCopy,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+import { ContentCopy, Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
   Dialog,
@@ -16,13 +12,19 @@ import {
   TextField,
 } from "@mui/material";
 
-import SnackBar from "./SnackBar";
+import AlertSnackbar from "./AlertSnackbar";
 
-export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
-  const [showPassword, setShowPassword] = useState(false);
+export default function VaultItemPopOut(props) {
+  const {
+    handleClosePopOut,
+    handleTogglePassword,
+    open,
+    showPassword,
+    vaultItem,
+    collection,
+  } = props;
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const handleTogglePassword = () => setShowPassword(!showPassword);
 
   const handleCopyPassword = () => {
     if (vaultItem.password) {
@@ -31,7 +33,7 @@ export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
     }
   };
   return (
-    <Dialog open={open} onClose={() => closePopOut()} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClosePopOut} fullWidth maxWidth="sm">
       <DialogTitle>Account Details</DialogTitle>
       <DialogContent>
         <Stack spacing={2} margin={2}>
@@ -39,17 +41,20 @@ export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
             defaultValue={vaultItem.name}
             variant="outlined"
             label="Account Name"
-            inputProps={{ readOnly: true }}></TextField>
+            inputProps={{ readOnly: true }}
+          ></TextField>
           <TextField
             defaultValue={vaultItem.url}
             variant="outlined"
             label="URL"
-            inputProps={{ readOnly: true }}></TextField>
+            inputProps={{ readOnly: true }}
+          ></TextField>
           <TextField
             defaultValue={vaultItem.username}
             variant="outlined"
             label="Username"
-            inputProps={{ readOnly: true }}></TextField>
+            inputProps={{ readOnly: true }}
+          ></TextField>
           <TextField
             defaultValue={vaultItem.password}
             variant="outlined"
@@ -63,7 +68,8 @@ export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={handleTogglePassword}
-                      onMouseDown={handleTogglePassword}>
+                      onMouseDown={handleTogglePassword}
+                    >
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
@@ -71,24 +77,33 @@ export default function VaultItemPopOut({ vaultItem, open, closePopOut }) {
                     <IconButton
                       aria-label="toggle password copy"
                       onClick={handleCopyPassword}
-                      onMouseDown={handleCopyPassword}>
+                      onMouseDown={handleCopyPassword}
+                    >
                       <ContentCopy />
                     </IconButton>
                   </InputAdornment>
                 </>
               ),
-            }}></TextField>
+            }}
+          ></TextField>
+          <TextField
+            defaultValue={collection}
+            variant="outlined"
+            label="Collection"
+            inputProps={{ readOnly: true }}
+          ></TextField>
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => closePopOut()}>Close</Button>
+        <Button onClick={handleClosePopOut}>Close</Button>
       </DialogActions>
-      <SnackBar
+      <AlertSnackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         duration={2000}
         message={"Password Copied"}
         open={openSnackbar}
-        setOpenSnackbar={setOpenSnackbar}
+        setOpen={setOpenSnackbar}
+        severity={"success"}
       />
     </Dialog>
   );

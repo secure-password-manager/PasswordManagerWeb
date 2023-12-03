@@ -11,40 +11,50 @@ import {
 } from "@mui/material";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import VaultItemPopOut from "./VaultItemPopOut";
-import SnackBar from "./SnackBar";
+import AlertSnackbar from "./AlertSnackbar";
 import { deleteVaultItem } from "@/common/ServerAPI";
+import { deleteItem } from "@/common/stateMutation.jsx";
 
-export default function VaultItemTiles({ items }) {
-  const itemsArray = Object.keys(items).map((item) => items[item]);
+export default function VaultItemTiles(props) {
+  const { itemsArray, setItems } = props;
   const [open, setOpen] = useState(false);
   const [vaultItem, setVaultItem] = useState({});
+  const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(itemsArray.map(() => false));
+  const [showPassword, setShowPassword] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackBarMessaage, setSnackBarMessage] = useState('');
+  const [snackBarMessaage, setSnackBarMessage] = useState("");
+  const [snackBarSeverity, setSnackBarSeverity] = useState("error");
   const navigate = useNavigate();
 
-  const openPopOut = (event, vaultItem) => {
+  const openPopOut = (event, vaultItem, collection) => {
     setVaultItem(vaultItem);
+    setCollection(collection);
     setOpen(true);
   };
 
-  const closePopOut = () => {
+  const handleClosePopOut = () => {
     setOpen(false);
+    setShowPassword(false);
   };
 
+  const handleTogglePassword = () => setShowPassword(!showPassword);
 
   const networkErrorHandler = (error) => {
     if (error.response.status === 403) {
       setSnackBarMessage("Please sign in again to continue");
+      setSnackBarSeverity("warning");
       setOpenSnackbar(true);
-      navigate("/login-signup");
+      setTimeout(() => {
+        navigate("/login-signup");
+      }, 2000);
       return;
     }
 
     if (error.response.status === 400 || error.response.status === 404) {
       setSnackBarMessage("Failed to access data, try again later");
+      setSnackBarSeverity("error");
       setOpenSnackbar(true);
-      return;
     }
   };
 
@@ -56,29 +66,29 @@ export default function VaultItemTiles({ items }) {
         listItem
       );
       const vaultItem = itemsArray[vaultItemIndex];
-      const deleteClicked = event.target.closest("button")
+      const deleteClicked = event.target.closest("button");
       if (deleteClicked) {
-        await handleDeleteVaultItem(vaultItem.uuid, vaultItemIndex);
+        await handleDeleteVaultItem(vaultItem, vaultItemIndex);
       } else {
-        openPopOut(event, vaultItem.data);
+        openPopOut(event, vaultItem.data, vaultItem.vault_collection_name);
       }
     }
   };
 
-  const handleDeleteVaultItem = async (uuid, vaultItemIndex) => {
+  const loadingStates = (vaultItemIndex, isLoading) => {
+    const updatedLoadingStates = [...loading];
+    updatedLoadingStates[vaultItemIndex] = isLoading;
+    setLoading(updatedLoadingStates);
+  };
+
+  const handleDeleteVaultItem = async (vaultItem, vaultItemIndex) => {
     try {
-      let updatedLoadingStates = [...loading];
-      updatedLoadingStates[vaultItemIndex] = true;
-      setLoading(updatedLoadingStates);
-      const response = await deleteVaultItem(uuid);
-      // Update state
-      updatedLoadingStates = [...loading];
-      updatedLoadingStates[vaultItemIndex] = false;
-      setLoading(updatedLoadingStates);
+      loadingStates(vaultItemIndex, true);
+      await deleteVaultItem(vaultItem.uuid);
+      deleteItem(vaultItem, setItems);
+      loadingStates(vaultItemIndex, false);
     } catch (error) {
-      const updatedLoadingStates = [...loading];
-      updatedLoadingStates[vaultItemIndex] = false;
-      setLoading(updatedLoadingStates);
+      loadingStates(vaultItemIndex, false);
       networkErrorHandler(error);
     }
   };
@@ -107,16 +117,20 @@ export default function VaultItemTiles({ items }) {
         ))}
       </List>
       <VaultItemPopOut
-        vaultItem={vaultItem}
+        handleClosePopOut={handleClosePopOut}
         open={open}
-        closePopOut={closePopOut}
+        handleTogglePassword={handleTogglePassword}
+        showPassword={showPassword}
+        vaultItem={vaultItem}
+        collection={collection}
       />
-      <SnackBar
+      <AlertSnackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         duration={2000}
         message={snackBarMessaage}
         open={openSnackbar}
-        setOpenSnackbar={setOpenSnackbar}
+        setOpen={setOpenSnackbar}
+        severity={snackBarSeverity}
       />
     </>
   );

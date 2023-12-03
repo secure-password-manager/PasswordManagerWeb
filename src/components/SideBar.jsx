@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -10,12 +10,24 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import VaultItemTiles from "./VaultItemTiles";
 
 const drawerWidth = 240;
 
-export default function ({ collections }) {
+const SideBar = (props) => {
+  const { items, setItems, collections } = props;
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionUuid, setCollectionUuid] = useState("");
+  const [showAll, setShowAll] = useState(true);
+  const itemsArray = Object.keys(items).map((item) => items[item]);
+
   const handleOnClick = (event) => {
-    console.log(event);
+    itemsArray.filter(
+      (item) => item.vault_collection === event.currentTarget.dataset.uuid
+    );
+    setShowAll(false);
+    setCollectionUuid(event.currentTarget.dataset.uuid);
+    setCollectionName(event.currentTarget.dataset.name);
   };
 
   return (
@@ -25,30 +37,68 @@ export default function ({ collections }) {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-      >
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+        >
+          <Toolbar />
+          <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 5 }}>
+            <List>
+              <Typography sx={{ fontSize: "h5.fontSize" }}>
+                COLLECTIONS
+              </Typography>
+              <div>
+                {collections.map((collection) => {
+                  return (
+                    <ListItem key={collection.uuid}>
+                      <ListItemButton
+                        onClick={(event) => handleOnClick(event)}
+                        data-uuid={collection.uuid}
+                        data-name={collection.name}
+                      >
+                        <ListItemText primary={collection.name} />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
+              </div>
+            </List>
+            <Divider />
+          </Box>
+        </Drawer>
         <Toolbar />
-        <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 5 }}>
-          <Typography sx={{ fontSize: "h5.fontSize" }}>COLLECTIONS</Typography>
-          <List>
-            {collections.map((collections) => {
-              return (
-                <ListItem key={collections.name}>
-                  <ListItemButton onClick={handleOnClick}>
-                    <ListItemText primary={collections.name} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-          <Divider />
-        </Box>
-      </Drawer>
-      <Toolbar />
-    </Box>
+      </Box>
+      <Box sx={{ paddingLeft: 35 }}>
+        <>
+          {showAll ? (
+            <VaultItemTiles
+              itemsArray={Object.values(items)}
+              setItems={setItems}
+            />
+          ) : (
+            <>
+              <Typography
+                sx={{
+                  fontSize: "h6.fontSize",
+                  paddingLeft: 2,
+                }}
+              >
+                {collectionName}
+              </Typography>
+              <VaultItemTiles
+                itemsArray={Object.values(items).filter(
+                  (item) => item.vault_collection === collectionUuid
+                )}
+                setItems={setItems}
+              />
+            </>
+          )}
+        </>
+      </Box>
+    </>
   );
-}
+};
+
+export default SideBar;

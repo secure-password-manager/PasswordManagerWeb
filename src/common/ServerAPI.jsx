@@ -14,6 +14,7 @@ import {
   CREATE_ACCOUNT_URL,
   ITEMS_URL,
   LOGIN_ACCOUNT_URL,
+  LOGOUT_ACCOUNT_URL,
 } from "../config/AppConstant";
 
 async function createAccount(email, password) {
@@ -43,6 +44,10 @@ async function loginAccount(email, password) {
 
   const encryptedSymmetricKey = response.data.encrypted_symmetric_key;
   return await decryptSymmetricKey(encryptedSymmetricKey, masterKey);
+}
+
+async function logoutAccount() {
+  return await axios.post(LOGOUT_ACCOUNT_URL);
 }
 
 async function getUserData(symmetricKey) {
@@ -92,9 +97,11 @@ async function deleteVaultItem(uuid) {
 
 export {
   createAccount,
+  decryptItems,
   deleteVaultItem,
   getUserData,
   loginAccount,
+  logoutAccount,
   postCollections,
   postVaultItem,
 };

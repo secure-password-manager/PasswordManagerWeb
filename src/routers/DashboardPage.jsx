@@ -32,7 +32,7 @@ function DashboardPage() {
   return (
     <>
       <NavBar />
-      <SideBar collections={collections} />
+      <SideBar items={items} collections={collections} setItems={setItems} />
       <Box
         sx={{ display: "flex", justifyContent: "space-between" }}
         maxWidth={750}
@@ -47,13 +47,12 @@ function DashboardPage() {
         >
           DASHBOARD
         </Typography>
-        <Box sx={{ paddingTop: 8 }}>
-          <NewItemForm collections={collections} />
-        </Box>
-      </Box>
-      <Box sx={{ paddingLeft: 35 }}>
-        <VaultItemTiles items={items} collections={collections} />
-      </Box>
+        <NewItemForm
+          collections={collections}
+          setCollections={setCollections}
+          setItems={setItems}
+        />
+       </Box>
     </>
   );
 }
