@@ -6,7 +6,7 @@ function Logo() {
   return (
     <>
       <CardMedia
-        sx={{ objectFit: "scale-down", py: 1, height: 50 }}
+        sx={{ objectFit: "scale-down", py: 1, height: 50, width: "auto" }}
         image={logo2}
         component="img"
       />
