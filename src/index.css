@@ -1,0 +1,13 @@
+@import url("https://use.typekit.net/omm2ggw.css");
+
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #eff2ee;
+  font-family: "mr-eaves-modern", sans-serif;
+  font-weight: 400, 700;
+}

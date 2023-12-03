@@ -1,13 +1,15 @@
 import React from "react";
 import LoginForm from "../components/LoginForm";
 import NavBar from "../components/NavBar";
+import { Stack } from "@mui/material";
 
 function LoginSignupPage() {
   return (
     <>
-      <NavBar />
-      <h1>Account Page</h1>
-      <LoginForm></LoginForm>
+      <Stack spacing={20} alignItems="center">
+        <NavBar />
+        <LoginForm></LoginForm>
+      </Stack>
     </>
   );
 }

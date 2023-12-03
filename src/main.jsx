@@ -5,6 +5,9 @@ import HomePage from "./routers/Home.jsx";
 import ErrorPage from "./routers/ErrorPage.jsx";
 import LoginSignupPage from "./routers/LoginSignupPage.jsx";
 import DashboardPage from "./routers/DashboardPage.jsx";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./components/theme.jsx";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +27,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </React.StrictMode>
 );

@@ -1,10 +1,8 @@
-import * as React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
   Drawer,
-  AppBar,
-  CssBaseline,
   Toolbar,
   List,
   Divider,
@@ -19,6 +17,7 @@ import { deleteCollection } from "../common/stateMutation";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import IconButton from "@mui/material/IconButton";
 import AlertSnackbar from "./AlertSnackbar";
+import VaultItemTiles from "./VaultItemTiles";
 
 const drawerWidth = 240;
 
@@ -70,60 +69,71 @@ const renderDeleteIcon = ({
   return null;
 };
 
-const SideBar = ({ collections, setCollections, setItems }) => {
-  const [deleteError, setDeleteError] = React.useState(false);
+
+import VaultItemTiles from "./VaultItemTiles";
+
+const drawerWidth = 240;
+
+const SideBar = (props) => {
+  const { items, setItems, collections, setCollections } = props;
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionUuid, setCollectionUuid] = useState("");
+  const [showAll, setShowAll] = useState(true);
+  const itemsArray = Object.keys(items).map((item) => items[item]);
+  const [deleteError, setDeleteError] = useState(false);
   const navigate = useNavigate();
+
   const handleOnClick = (event) => {
-    console.log(event);
+    itemsArray.filter(
+      (item) => item.vault_collection === event.currentTarget.dataset.uuid
+    );
+    setShowAll(false);
+    setCollectionUuid(event.currentTarget.dataset.uuid);
+    setCollectionName(event.currentTarget.dataset.name);
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <NavBar />
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
+    <>
+      <Box sx={{ display: "flex" }}>
+        <Drawer
+          variant="permanent"
+          sx={{
             width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: "auto", paddingLeft: 2 }}>
-          <List>
-            <Typography sx={{ fontSize: "h5.fontSize" }}>
-              Collections
-            </Typography>
-            <div>
-              {collections.map((collection) => {
-                return (
-                  <ListItem
-                    key={collection.uuid}
-                    secondaryAction={renderDeleteIcon({
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+        >
+          <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 10 }}>
+            <List>
+              <Typography sx={{ fontSize: "h5.fontSize" }}>
+                COLLECTIONS
+              </Typography>
+              <div>
+                {collections.map((collection) => {
+                  return (
+                    <ListItem key={collection.uuid}
+                      secondaryAction={renderDeleteIcon({
                       collection,
                       navigate,
                       setCollections,
                       setItems,
                       setDeleteError,
-                    })}
-                  >
-                    <ListItemButton onClick={handleOnClick}>
-                      <ListItemText primary={collection.name} />
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-            </div>
-          </List>
+                    })}>
+                      <ListItemButton
+                        onClick={(event) => handleOnClick(event)}
+                        data-uuid={collection.uuid}
+                        data-name={collection.name}
+                      >
+                        <ListItemText primary={collection.name} />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
+              </div>
+            </List>
           <AlertSnackbar
             open={deleteError}
             setOpen={setDeleteError}
@@ -132,11 +142,38 @@ const SideBar = ({ collections, setCollections, setItems }) => {
             message={"Please sign in again to continue"}
             severity={"error"}
           />
-          <Divider />
-        </Box>
-      </Drawer>
-      <Toolbar />
-    </Box>
+            <Divider />
+          </Box>
+        </Drawer>
+      </Box>
+      <Box sx={{ paddingLeft: 35 }}>
+        <>
+          {showAll ? (
+            <VaultItemTiles
+              itemsArray={Object.values(items)}
+              setItems={setItems}
+            />
+          ) : (
+            <>
+              <Typography
+                sx={{
+                  fontSize: "h6.fontSize",
+                  paddingLeft: 2,
+                }}
+              >
+                {collectionName}
+              </Typography>
+              <VaultItemTiles
+                itemsArray={Object.values(items).filter(
+                  (item) => item.vault_collection === collectionUuid
+                )}
+                setItems={setItems}
+              />
+            </>
+          )}
+        </>
+      </Box>
+    </>
   );
 };
 

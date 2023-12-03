@@ -16,19 +16,20 @@ import { deleteVaultItem } from "@/common/ServerAPI";
 import { deleteItem } from "@/common/stateMutation.jsx";
 
 export default function VaultItemTiles(props) {
-  const { items, setItems } = props
-  const itemsArray = Object.keys(items).map((item) => items[item]);
+  const { itemsArray, setItems } = props;
   const [open, setOpen] = useState(false);
   const [vaultItem, setVaultItem] = useState({});
+  const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(itemsArray.map(() => false));
   const [showPassword, setShowPassword] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackBarMessaage, setSnackBarMessage] = useState('');
-  const [snackBarSeverity, setSnackBarSeverity] = useState('error');
+  const [snackBarMessaage, setSnackBarMessage] = useState("");
+  const [snackBarSeverity, setSnackBarSeverity] = useState("error");
   const navigate = useNavigate();
 
-  const openPopOut = (event, vaultItem) => {
+  const openPopOut = (event, vaultItem, collection) => {
     setVaultItem(vaultItem);
+    setCollection(collection);
     setOpen(true);
   };
 
@@ -44,7 +45,9 @@ export default function VaultItemTiles(props) {
       setSnackBarMessage("Please sign in again to continue");
       setSnackBarSeverity("warning");
       setOpenSnackbar(true);
-      setTimeout(() => {navigate("/login-signup")}, 2000);
+      setTimeout(() => {
+        navigate("/login-signup");
+      }, 2000);
       return;
     }
 
@@ -63,11 +66,11 @@ export default function VaultItemTiles(props) {
         listItem
       );
       const vaultItem = itemsArray[vaultItemIndex];
-      const deleteClicked = event.target.closest("button")
+      const deleteClicked = event.target.closest("button");
       if (deleteClicked) {
         await handleDeleteVaultItem(vaultItem, vaultItemIndex);
       } else {
-        openPopOut(event, vaultItem.data);
+        openPopOut(event, vaultItem.data, vaultItem.vault_collection_name);
       }
     }
   };
@@ -119,6 +122,7 @@ export default function VaultItemTiles(props) {
         handleTogglePassword={handleTogglePassword}
         showPassword={showPassword}
         vaultItem={vaultItem}
+        collection={collection}
       />
       <AlertSnackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
