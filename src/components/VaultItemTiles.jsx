@@ -16,8 +16,7 @@ import { deleteVaultItem } from "@/common/ServerAPI";
 import { deleteItem } from "@/common/stateMutation.jsx";
 
 export default function VaultItemTiles(props) {
-  const { items, setItems } = props;
-  const itemsArray = Object.keys(items).map((item) => items[item]);
+  const { itemsArray, setItems } = props;
   const [open, setOpen] = useState(false);
   const [vaultItem, setVaultItem] = useState({});
   const [collection, setCollection] = useState({});

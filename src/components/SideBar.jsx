@@ -21,17 +21,17 @@ const drawerWidth = 240;
 const SideBar = (props) => {
   const { items, setItems, collections } = props;
   const [collectionName, setCollectionName] = useState("");
-  const [filterItems, setFilterItems] = useState({});
+  const [collectionUuid, setCollectionUuid] = useState("");
   const [showAll, setShowAll] = useState(true);
   const itemsArray = Object.keys(items).map((item) => items[item]);
 
   const handleOnClick = (event) => {
-    let output = itemsArray.filter(
-      (item) => item.vault_collection_name == event.target.outerText
+    itemsArray.filter(
+      (item) => item.vault_collection === event.currentTarget.dataset.uuid
     );
-    setFilterItems(output);
     setShowAll(false);
-    setCollectionName(event.target.outerText);
+    setCollectionUuid(event.currentTarget.dataset.uuid);
+    setCollectionName(event.currentTarget.dataset.name);
   };
 
   return (
@@ -62,11 +62,15 @@ const SideBar = (props) => {
                 Collections
               </Typography>
               <div>
-                {collections.map((collections) => {
+                {collections.map((collection) => {
                   return (
-                    <ListItem key={collections.name}>
-                      <ListItemButton onClick={(event) => handleOnClick(event)}>
-                        <ListItemText primary={collections.name} />
+                    <ListItem key={collection.uuid}>
+                      <ListItemButton
+                        onClick={(event) => handleOnClick(event)}
+                        data-uuid={collection.uuid}
+                        data-name={collection.name}
+                      >
+                        <ListItemText primary={collection.name} />
                       </ListItemButton>
                     </ListItem>
                   );
@@ -81,7 +85,10 @@ const SideBar = (props) => {
       <Box sx={{ paddingLeft: 35 }}>
         <>
           {showAll ? (
-            <VaultItemTiles items={items} setItems={setItems} />
+            <VaultItemTiles
+              itemsArray={Object.values(items)}
+              setItems={setItems}
+            />
           ) : (
             <>
               <Typography
@@ -92,7 +99,12 @@ const SideBar = (props) => {
               >
                 {collectionName}
               </Typography>
-              <VaultItemTiles items={filterItems} setItems={setItems} />
+              <VaultItemTiles
+                itemsArray={Object.values(items).filter(
+                  (item) => item.vault_collection === collectionUuid
+                )}
+                setItems={setItems}
+              />
             </>
           )}
         </>
