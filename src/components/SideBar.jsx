@@ -34,7 +34,6 @@ const handleDeleteCollection = async (
     deleteCollection({ uuid: uuid }, setCollections, setItems);
   } catch (error) {
     if (error.response.status === 403) {
-      alert("Please sign in again to continue");
       setDeleteError(true);
       setTimeout(() => {
         navigate("/login-signup");
@@ -130,7 +129,7 @@ const SideBar = ({ collections, setCollections, setItems }) => {
             setOpen={setDeleteError}
             anchorOrigin={{ vertical: "center", horizontal: "center" }}
             duration={2000}
-            message={"Password Copied"}
+            message={"Please sign in again to continue"}
             severity={"error"}
           />
           <Divider />
