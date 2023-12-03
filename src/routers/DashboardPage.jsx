@@ -55,7 +55,12 @@ function DashboardPage() {
         </Box>
       </Box>
       <Box>
-        <SideBar items={items} collections={collections} setItems={setItems} />
+        <SideBar
+          items={items}
+          collections={collections}
+          setItems={setItems}
+          setCollections={setCollections}
+        />
       </Box>
     </>
   );

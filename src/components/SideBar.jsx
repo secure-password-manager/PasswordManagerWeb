@@ -32,12 +32,15 @@ const handleDeleteCollection = async (
     const response = await deleteCollections(uuid);
     deleteCollection({ uuid: uuid }, setCollections, setItems);
   } catch (error) {
+    console.log(error);
     if (error.response.status === 403) {
       setDeleteError(true);
       setTimeout(() => {
         navigate("/login-signup");
       }, 2000);
       return;
+    } else {
+      setDeleteError(true);
     }
   }
 };
@@ -68,11 +71,6 @@ const renderDeleteIcon = ({
   }
   return null;
 };
-
-
-import VaultItemTiles from "./VaultItemTiles";
-
-const drawerWidth = 240;
 
 const SideBar = (props) => {
   const { items, setItems, collections, setCollections } = props;
@@ -114,14 +112,16 @@ const SideBar = (props) => {
               <div>
                 {collections.map((collection) => {
                   return (
-                    <ListItem key={collection.uuid}
+                    <ListItem
+                      key={collection.uuid}
                       secondaryAction={renderDeleteIcon({
-                      collection,
-                      navigate,
-                      setCollections,
-                      setItems,
-                      setDeleteError,
-                    })}>
+                        collection,
+                        navigate,
+                        setCollections,
+                        setItems,
+                        setDeleteError,
+                      })}
+                    >
                       <ListItemButton
                         onClick={(event) => handleOnClick(event)}
                         data-uuid={collection.uuid}
@@ -134,14 +134,14 @@ const SideBar = (props) => {
                 })}
               </div>
             </List>
-          <AlertSnackbar
-            open={deleteError}
-            setOpen={setDeleteError}
-            anchorOrigin={{ vertical: "center", horizontal: "center" }}
-            duration={2000}
-            message={"Please sign in again to continue"}
-            severity={"error"}
-          />
+            <AlertSnackbar
+              open={deleteError}
+              setOpen={setDeleteError}
+              anchorOrigin={{ vertical: "center", horizontal: "center" }}
+              duration={2000}
+              message={"Failed to delete item"}
+              severity={"error"}
+            />
             <Divider />
           </Box>
         </Drawer>
