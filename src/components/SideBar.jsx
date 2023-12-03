@@ -31,20 +31,20 @@ const SideBar = (props) => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
+    <>
+      <Box sx={{ display: "flex" }}>
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
               width: drawerWidth,
               boxSizing: "border-box",
             },
           }}
         >
-          <Toolbar />
-          <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 5 }}>
+          <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 10 }}>
             <List>
               <Typography sx={{ fontSize: "h5.fontSize" }}>
                 COLLECTIONS
@@ -68,7 +68,6 @@ const SideBar = (props) => {
             <Divider />
           </Box>
         </Drawer>
-        <Toolbar />
       </Box>
       <Box sx={{ paddingLeft: 35 }}>
         <>
