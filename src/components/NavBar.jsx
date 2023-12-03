@@ -1,6 +1,7 @@
 import React from "react";
-import { Tab, Box } from "@mui/material";
+import { Tab, Box, Grid, AppBar, Stack, Toolbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Logo from "./Logo";
 import { logoutAccount } from "@/common/ServerAPI"
 import { useGlobalStore } from "@/common/useGlobalStore";
 
@@ -21,10 +22,22 @@ export default function NavBar() {
   }
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tab label="Home" onClick={() => navigate("/")} />
-        {symmetricKey && (
+    <Box
+      sx={{
+        width: "100%",
+      }}
+      alignItems="center"
+    >
+      <AppBar>
+        <Toolbar>
+          <Stack direction="row">
+            <Logo />
+            <Tab
+              sx={{ paddingLeft: 5 }}
+              label="Home"
+              onClick={() => navigate("/")}
+            />
+          {symmetricKey && (
           <Tab label="Dashboard" onClick={() => navigate("/dashboard")} />
         )}
         {symmetricKey ? (
@@ -35,7 +48,9 @@ export default function NavBar() {
             onClick={() => navigate("/login-signup")}
           />
         )}
-      </Box>
+          </Stack>
+        </Toolbar>
+      </AppBar>
     </Box>
   );
 }

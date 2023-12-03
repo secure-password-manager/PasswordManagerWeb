@@ -34,29 +34,30 @@ function DashboardPage() {
       <NavBar />
 
       <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          paddingTop: 10,
-        }}
+        sx={{ display: "flex", justifyContent: "space-between" }}
         maxWidth={750}
         ml={2}
       >
         <Typography
           sx={{
+            paddingTop: 15,
             paddingLeft: 35,
             fontSize: "h4.fontSize",
           }}
         >
-          Dashboard
+          DASHBOARD
         </Typography>
-        <NewItemForm
-          collections={collections}
-          setCollections={setCollections}
-          setItems={setItems}
-        />
+        <Box sx={{ paddingTop: 15 }}>
+          <NewItemForm
+            collections={collections}
+            setCollections={setCollections}
+            setItems={setItems}
+          />
+        </Box>
       </Box>
-      <SideBar items={items} collections={collections} setItems={setItems} />
+      <Box>
+        <SideBar items={items} collections={collections} setItems={setItems} />
+      </Box>
     </>
   );
 }

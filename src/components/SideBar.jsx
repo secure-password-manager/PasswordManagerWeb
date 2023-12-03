@@ -3,8 +3,6 @@ import {
   Box,
   Typography,
   Drawer,
-  AppBar,
-  CssBaseline,
   Toolbar,
   List,
   Divider,
@@ -12,8 +10,6 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import NavBar from "./NavBar";
-import { Container } from "@mui/system";
 import VaultItemTiles from "./VaultItemTiles";
 
 const drawerWidth = 240;
@@ -37,13 +33,6 @@ const SideBar = (props) => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        >
-          <NavBar />
-        </AppBar>
         <Drawer
           variant="permanent"
           sx={{
@@ -55,11 +44,10 @@ const SideBar = (props) => {
             },
           }}
         >
-          <Toolbar />
-          <Box sx={{ overflow: "auto", paddingLeft: 2 }}>
+          <Box sx={{ overflow: "auto", paddingLeft: 2, paddingTop: 10 }}>
             <List>
               <Typography sx={{ fontSize: "h5.fontSize" }}>
-                Collections
+                COLLECTIONS
               </Typography>
               <div>
                 {collections.map((collection) => {
@@ -80,7 +68,6 @@ const SideBar = (props) => {
             <Divider />
           </Box>
         </Drawer>
-        <Toolbar />
       </Box>
       <Box sx={{ paddingLeft: 35 }}>
         <>
