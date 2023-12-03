@@ -1,26 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { Tab, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { logoutAccount } from "@/common/ServerAPI"
 import { useGlobalStore } from "@/common/useGlobalStore";
-import SnackBar from "./SnackBar";
 
 export default function NavBar() {
   const navigate = useNavigate();
   const symmetricKey = useGlobalStore((state) => state.symmetricKey);
   const { deleteSymmetricKey } = useGlobalStore();
-  const [snackBarMessaage, setSnackBarMessage] = useState("")
-  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleLogout = async () => {
+    deleteSymmetricKey();
+    localStorage.removeItem("key-fortress");
     try {
       await logoutAccount();
-      deleteSymmetricKey();
-      localStorage.removeItem("key-fortress");
       navigate("/login-signup");
     } catch(err) {
-      setSnackBarMessage("Please sign in and try again.")
-      setOpenSnackbar(true);
       navigate("/login-signup");
     }
   }
@@ -41,13 +36,6 @@ export default function NavBar() {
           />
         )}
       </Box>
-      <SnackBar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        duration={2000}
-        message={snackBarMessaage}
-        open={openSnackbar}
-        setOpenSnackbar={setOpenSnackbar}
-      />
     </Box>
   );
 }
