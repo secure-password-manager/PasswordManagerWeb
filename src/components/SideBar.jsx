@@ -13,30 +13,69 @@ import {
   ListItemText,
 } from "@mui/material";
 import NavBar from "./NavBar";
+import { useNavigate } from "react-router-dom";
 import { deleteCollections } from "../common/ServerAPI";
 import { deleteCollection } from "../common/stateMutation";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import IconButton from "@mui/material/IconButton";
-import { Container } from "@mui/system";
+import AlertSnackbar from "./AlertSnackbar";
 
 const drawerWidth = 240;
 
+const handleDeleteCollection = async (
+  uuid,
+  navigate,
+  setCollections,
+  setDeleteError,
+  setItems
+) => {
+  try {
+    const response = await deleteCollections(uuid);
+    deleteCollection({ uuid: uuid }, setCollections, setItems);
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("Please sign in again to continue");
+      setDeleteError(true);
+      setTimeout(() => {
+        navigate("/login-signup");
+      }, 2000);
+      return;
+    }
+  }
+};
+
+const renderDeleteIcon = ({
+  collection,
+  setCollections,
+  setItems,
+  navigate,
+  setDeleteError,
+}) => {
+  if (collection.name !== "Default") {
+    return (
+      <IconButton
+        onClick={() =>
+          handleDeleteCollection(
+            collection.uuid,
+            navigate,
+            setCollections,
+            setDeleteError,
+            setItems
+          )
+        }
+      >
+        <DeleteTwoToneIcon />
+      </IconButton>
+    );
+  }
+  return null;
+};
+
 const SideBar = ({ collections, setCollections, setItems }) => {
+  const [deleteError, setDeleteError] = React.useState(false);
+  const navigate = useNavigate();
   const handleOnClick = (event) => {
     console.log(event);
-  };
-
-  const handleDeleteCollection = async (uuid) => {
-    try {
-      const response = await deleteCollections(uuid);
-      deleteCollection({ uuid: uuid }, setCollections, setItems);
-    } catch (error) {
-      if (error.response.status === 403) {
-        alert("Please sign in again to continue");
-        navigate("/login-signup");
-        return;
-      }
-    }
   };
 
   return (
@@ -70,13 +109,13 @@ const SideBar = ({ collections, setCollections, setItems }) => {
                 return (
                   <ListItem
                     key={collection.uuid}
-                    secondaryAction={
-                      <IconButton
-                        onClick={() => handleDeleteCollection(collection.uuid)}
-                      >
-                        <DeleteTwoToneIcon />
-                      </IconButton>
-                    }
+                    secondaryAction={renderDeleteIcon({
+                      collection,
+                      navigate,
+                      setCollections,
+                      setItems,
+                      setDeleteError,
+                    })}
                   >
                     <ListItemButton onClick={handleOnClick}>
                       <ListItemText primary={collection.name} />
@@ -86,6 +125,14 @@ const SideBar = ({ collections, setCollections, setItems }) => {
               })}
             </div>
           </List>
+          <AlertSnackbar
+            open={deleteError}
+            setOpen={setDeleteError}
+            anchorOrigin={{ vertical: "center", horizontal: "center" }}
+            duration={2000}
+            message={"Password Copied"}
+            severity={"error"}
+          />
           <Divider />
         </Box>
       </Drawer>
