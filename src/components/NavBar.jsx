@@ -35,7 +35,7 @@ export default function NavBar() {
             <Tab
               sx={{ paddingLeft: 5 }}
               label="Home"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/", { state: { from: "navbar" }})}
             />
           {symmetricKey && (
           <Tab label="Dashboard" onClick={() => navigate("/dashboard")} />
