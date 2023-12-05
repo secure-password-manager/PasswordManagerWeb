@@ -25,18 +25,16 @@ export default function HeroImageCard() {
             denies access to their password vault.
           </Typography>
           <Typography>
-            It securely and conveniently gives users access to their passwords
-            by implementing session-based authentication that either grants or
-            denies access to their password vault. JavaScript/React powers the
-            application on the frontend and Python/Django on the backend and is
-            supported by AWS infrastructure. Our application employs client-side
-            encryption and encryption at rest, ensuring the utmost protection
-            for sensitive user data. We also provide a password strength meter
-            that provides instant feedback on the strength of your chosen
-            passwords. In contrast, a built-in random password generator ensures
-            the creation of formidable, hacker-resistant passwords. As an extra
-            layer of defense, our Pwned Password checker scans and verifies
-            passwords to ensure they have not been compromised.
+            JavaScript/React powers the application on the frontend and
+            Python/Django on the backend and is supported by AWS infrastructure.
+            Our application employs client-side encryption and encryption at
+            rest, ensuring the utmost protection for sensitive user data. We
+            also provide a password strength meter that provides instant
+            feedback on the strength of your chosen passwords. In contrast, a
+            built-in random password generator ensures the creation of
+            formidable, hacker-resistant passwords. As an extra layer of
+            defense, our Pwned Password checker scans and verifies passwords to
+            ensure they have not been compromised.
           </Typography>
         </Box>
       </Stack>
