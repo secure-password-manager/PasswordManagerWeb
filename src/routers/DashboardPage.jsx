@@ -32,7 +32,6 @@ function DashboardPage() {
   return (
     <>
       <NavBar />
-
       <Box
         sx={{ display: "flex", justifyContent: "space-between" }}
         maxWidth={750}
@@ -56,7 +55,12 @@ function DashboardPage() {
         </Box>
       </Box>
       <Box>
-        <SideBar items={items} collections={collections} setItems={setItems} />
+        <SideBar
+          items={items}
+          collections={collections}
+          setItems={setItems}
+          setCollections={setCollections}
+        />
       </Box>
     </>
   );
