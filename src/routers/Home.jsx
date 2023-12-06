@@ -11,8 +11,12 @@ function HomePage() {
   const symmetricKey = useGlobalStore((state) => state.symmetricKey);
 
   useEffect(() => {
-    if(symmetricKey) {
-      if(!location.state || !location.state.from || location.state.from !== "navbar") {
+    if (symmetricKey) {
+      if (
+        !location.state ||
+        !location.state.from ||
+        location.state.from !== "navbar"
+      ) {
         navigate("/dashboard");
       }
     }
