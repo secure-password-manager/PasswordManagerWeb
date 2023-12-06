@@ -137,7 +137,7 @@ const SideBar = (props) => {
             <AlertSnackbar
               open={deleteError}
               setOpen={setDeleteError}
-              anchorOrigin={{ vertical: "center", horizontal: "center" }}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
               duration={2000}
               message={"Failed to delete item"}
               severity={"error"}
