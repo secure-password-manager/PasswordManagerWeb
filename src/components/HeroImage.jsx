@@ -4,7 +4,7 @@ import castle from "../assets/castle.jpg";
 
 export default function HeroImageCard() {
   return (
-    <Box sx={{ pt: 15, display: "flex", justifyContent: "center", gap: 4 }}>
+    <Box sx={{ pt: 15, display: "flex", justifyContent: "center" }}>
       <Card sx={{ width: "90%", height: 500 }}>
         <Stack direction="row">
           <CardMedia
@@ -16,7 +16,7 @@ export default function HeroImageCard() {
               Welcome!
             </Typography>
           </CardMedia>
-          <Box sx={{ px: 5, py: 5, backgroundColor: "#e5e9e2" }}>
+          <Box sx={{ px: 5, py: 5, backgroundColor: "#e5e9e2", width: "100%" }}>
             <Typography variant="h4" gutterBottom>
               Trust Key Fortress to guard your passwords.
             </Typography>
